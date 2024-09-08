@@ -36,21 +36,18 @@ public class Facture {
     @Column
     private int total;
 
-    @Column
-    private String payment;
-
     // Relación con la entidad `Order`
     @OneToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 
     // Relación con la entidad `MetodoPago`
     @OneToOne
-    @JoinColumn(name = "metodo_pago_id")
-    private MetodoPago metodoPago;
+    @JoinColumn(name = "payment_id", referencedColumnName = "id")
+    private Payment payment;
 
     // Relación con la entidad `Client`
     @ManyToOne
-    @JoinColumn(name = "client_id") // Este es el nombre de la columna en la tabla `Facture`
-    private Client client;
+    @JoinColumn(name = "user_id", referencedColumnName = "id") 
+    private User user;
 }
