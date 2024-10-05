@@ -1,32 +1,13 @@
-import React, { useState, useEffect } from 'react';
+// src/views/Home.jsx
+import React from 'react';
 
 const Home = () => {
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-
-  useEffect(() => {
-    // Aquí harías la llamada a tu API para obtener productos destacados
-    fetch('/api/products/featured')
-      .then(response => response.json())
-      .then(data => setFeaturedProducts(data))
-      .catch(error => console.log(error));
-  }, []);
-
   return (
-    <div className="home-container">
-      <h1>Bienvenido a la tienda de zapatillas</h1>
-      <div className="featured-products">
-        {featuredProducts.length > 0 ? (
-          featuredProducts.map(product => (
-            <div key={product.id} className="product-card">
-              <img src={product.image} alt={product.name} />
-              <h3>{product.name}</h3>
-              <p>{product.price}</p>
-            </div>
-          ))
-        ) : (
-          <p>Cargando productos...</p>
-        )}
-      </div>
+    <div className="flex flex-col items-center justify-center h-full w-full text-center">
+      <h2 className="text-4xl font-bold mb-4">Bienvenido a nuestra tienda de zapatillas</h2>
+      <p className="text-gray-600 text-lg">
+        Encuentra las mejores ofertas en zapatillas deportivas y de moda.
+      </p>
     </div>
   );
 };
