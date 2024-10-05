@@ -1,6 +1,7 @@
 // src/App.jsx
 import React from "react";
 import Navigation from "./components/Navigation";
+import Footer from "./components/Footer"; // Importa el Footer
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Home from "./views/Home";
 import Contact from "./views/Contact";
@@ -29,6 +30,7 @@ const App = () => {
         </button>
         <p className="mt-2 text-gray-600">La ruta actual es: {location.pathname}</p>
       </div>
+      <Footer /> {/* Agrega el Footer aquí */}
     </div>
   );
 };
