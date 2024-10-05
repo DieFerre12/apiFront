@@ -1,0 +1,32 @@
+// src/components/Footer.jsx
+import React from 'react';
+
+const Footer = () => {
+  return (
+    <footer className="bg-gray-800 text-white text-center p-4">
+      <div className="flex justify-evenly mt-2 space-x-4">
+      <div>
+        <h4 className="font-bold">Empresa</h4>
+        <p className="text-gray-300">Conoce más sobre nosotros:</p>
+        </div>
+        <div>
+          <h4 className="font-bold">Explora</h4>
+          <ul className="text-gray-300">
+            <li><a href="/about" className="hover:underline">Acerca de</a></li>
+            <li><a href="/contact" className="hover:underline">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="font-bold">Seguinos</h4>
+          <ul className="text-gray-300">
+            <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Twitter</a></li>
+            <li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <p className="mt-6">&copy; {new Date().getFullYear()} Zapas el Tatita. Todos los derechos reservados.</p> {/* Añadido mt-4 */}
+    </footer>
+  );
+};
+
+export default Footer;
