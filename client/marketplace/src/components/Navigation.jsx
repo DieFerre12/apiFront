@@ -14,6 +14,9 @@ const Navigation = () => {
 
   return (
     <nav className="bg-gray-800 text-white p-4 shadow-xl"> {/* Cambiado a shadow-xl para una sombra más notoria */}
+    <div> 
+      hola registrar login 
+    </div>
       <div className="flex justify-between items-center">
         <Link to="/" className="flex items-center">
           <img src={logo} alt="Zapas el Tatita" className="h-20 w-auto" />
@@ -36,6 +39,7 @@ const Navigation = () => {
             onClick={handleSearch}
             className="p-1 bg-transparent flex items-center"
           >
+            <div> buscar </div>
             <img src={searchIcon} alt="Buscar" className="h-6 w-6" />
           </button>
         </div>
