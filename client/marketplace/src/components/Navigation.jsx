@@ -13,34 +13,20 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="bg-gray-800 text-white p-4">
+    <nav className="bg-gray-800 text-white p-4 shadow-xl"> {/* Cambiado a shadow-xl para una sombra más notoria */}
       <div className="flex justify-between items-center">
         <Link to="/" className="flex items-center">
           <img src={logo} alt="Zapas el Tatita" className="h-20 w-auto" />
         </Link>
         <ul className="flex space-x-8 text-lg font-semibold">
-          <li>
-            <Link 
-              to="/product" 
-              className="text-gray-100 hover:text-gray-100"
-            >
-              Productos
-            </Link>
-          </li>
-          <li>
-            <Link 
-              to="/cart" 
-              className="text-gray-100 hover:text-gray-100"
-            >
-              Carrito
-            </Link>
-          </li>
+          <li><Link to="/product" className="text-white hover:text-gray-300">Producto</Link></li>
+          <li><Link to="/cart" className="text-white hover:text-gray-300">Carrito</Link></li>
         </ul>
         <div className="flex items-center space-x-2 justify-between">
           {/* Barra de búsqueda ajustada */}
           <input
             type="text"
-            className="p-2 rounded-md text-gray-800 w-60"
+            className="p-2 rounded-md text-gray-800 w-64"
             placeholder="Buscar..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -50,11 +36,7 @@ const Navigation = () => {
             onClick={handleSearch}
             className="p-1 bg-transparent flex items-center"
           >
-            <img 
-              src={searchIcon} 
-              alt="Buscar" 
-              className="h-6 w-6 object-contain" 
-            />
+            <img src={searchIcon} alt="Buscar" className="h-6 w-6" />
           </button>
         </div>
       </div>
