@@ -1,18 +1,27 @@
-import React from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import React, { useState } from "react";
 import Navigation from "./components/Navigation";
-import Footer from "./components/Footer";
+import Footer from "./components/Footer/Footer"; // Importa el Footer
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Home from "./views/Home";
-import Product from "./views/Products"; // Asegúrate de que la ruta esté bien escrita
-import ProductDetail from "./views/ProductDetail"; // Añadido para los detalles de producto
-
+import Product from "./views/Products"; // Cambia esto para importar el componente de productos
+import LoginModal from "./components/Login"; // Importa el modal de Login
+import ProductDetail from "./views/ProductDetail"; // Importa el componente de detalles de producto
 
 const App = () => {
+  const [isLoginOpen, setIsLoginOpen] = useState(false); // Estado para controlar el modal de login
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleClick = () => {
-    navigate("/product");
+    navigate("/product"); // Cambia a la ruta de producto
+  };
+
+  const handleLoginClick = () => {
+    setIsLoginOpen(true); // Abrir el modal de login
+  };
+
+  const handleCloseLogin = () => {
+    setIsLoginOpen(false); // Cerrar el modal de login
   };
 
   return (
@@ -24,20 +33,10 @@ const App = () => {
           <Route path="/product" element={<Product />} />
           <Route path="/product/:productId" element={<ProductDetail />} /> {/* Ruta para detalles del producto */}
         </Routes>
-        {/* Solo muestra el botón en la página principal */}
-        {location.pathname === "/" && (
-          <>
-            <button
-              onClick={handleClick}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Ver Productos {/* Texto del botón */}
-            </button>
-            <p className="mt-2 text-gray-600">Ruta actual: {location.pathname}</p>
-          </>
-        )}
+        <p className="mt-2 text-gray-600">La ruta actual es: {location.pathname}</p>
       </div>
-      <Footer /> {/* Coloca el footer en la parte inferior */}
+      <Footer />
+      <LoginModal isOpen={isLoginOpen} onClose={handleCloseLogin} /> {/* Modal de Login */}
     </div>
   );
 };
