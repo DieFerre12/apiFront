@@ -1,17 +1,27 @@
 // src/App.jsx
-import React from "react";
+import React, { useState } from "react";
 import Navigation from "./components/Navigation";
-import Footer from "./components/Footer"; // Importa el Footer
+import Footer from "./components/Footer/Footer"; // Importa el Footer
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Home from "./views/Home";
 import Product from "./views/Productos"; // Cambia esto para importar el componente de productos
+import LoginModal from "./components/Login"; // Importa el modal de Login
 
 const App = () => {
+  const [isLoginOpen, setIsLoginOpen] = useState(false); // Estado para controlar el modal de login
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleClick = () => {
     navigate("/product"); // Cambia a la ruta de producto
+  };
+
+  const handleLoginClick = () => {
+    setIsLoginOpen(true); // Abrir el modal de login
+  };
+
+  const handleCloseLogin = () => {
+    setIsLoginOpen(false); // Cerrar el modal de login
   };
 
   return (
@@ -22,15 +32,10 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/product" element={<Product />} /> {/* Ruta para el componente Producto */}
         </Routes>
-        <button 
-          onClick={handleClick} 
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Ir a Producto {/* Cambia el texto del botón */}
-        </button>
         <p className="mt-2 text-gray-600">La ruta actual es: {location.pathname}</p>
       </div>
-      <Footer /> {/* Agrega el Footer aquí */}
+      <Footer />
+      <LoginModal isOpen={isLoginOpen} onClose={handleCloseLogin} /> {/* Modal de Login */}
     </div>
   );
 };
