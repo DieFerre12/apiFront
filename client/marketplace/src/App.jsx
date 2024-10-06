@@ -4,14 +4,14 @@ import Navigation from "./components/Navigation";
 import Footer from "./components/Footer"; // Importa el Footer
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Home from "./views/Home";
-import Contact from "./views/Contact";
+import Product from "./views/Productos"; // Cambia esto para importar el componente de productos
 
 const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleClick = () => {
-    navigate("/contact");
+    navigate("/product"); // Cambia a la ruta de producto
   };
 
   return (
@@ -20,13 +20,13 @@ const App = () => {
       <div className="flex-grow flex flex-col items-center justify-center p-4">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/product" element={<Product />} /> {/* Ruta para el componente Producto */}
         </Routes>
         <button 
           onClick={handleClick} 
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
-          Ir a contacto
+          Ir a Producto {/* Cambia el texto del botón */}
         </button>
         <p className="mt-2 text-gray-600">La ruta actual es: {location.pathname}</p>
       </div>

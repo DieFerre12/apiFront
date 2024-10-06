@@ -19,14 +19,28 @@ const Navigation = () => {
           <img src={logo} alt="Zapas el Tatita" className="h-20 w-auto" />
         </Link>
         <ul className="flex space-x-8 text-lg font-semibold">
-          <li><Link to="/contact" className="text-yellow-300 hover:text-yellow-400">Contacto</Link></li>
-          <li><Link to="/cart" className="text-green-300 hover:text-green-400">Carrito</Link></li>
+          <li>
+            <Link 
+              to="/product" 
+              className="text-gray-100 hover:text-gray-100"
+            >
+              Productos
+            </Link>
+          </li>
+          <li>
+            <Link 
+              to="/cart" 
+              className="text-gray-100 hover:text-gray-100"
+            >
+              Carrito
+            </Link>
+          </li>
         </ul>
         <div className="flex items-center space-x-2 justify-between">
           {/* Barra de búsqueda ajustada */}
           <input
             type="text"
-            className="p-2 rounded-md text-gray-800 w-64"
+            className="p-2 rounded-md text-gray-800 w-60"
             placeholder="Buscar..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -40,7 +54,7 @@ const Navigation = () => {
               src={searchIcon} 
               alt="Buscar" 
               className="h-6 w-6 object-contain" 
-            /> {/* object-contain para evitar distorsión */}
+            />
           </button>
         </div>
       </div>
