@@ -7,7 +7,9 @@ const Footer = () => {
       <div className="flex justify-evenly mt-2 space-x-4">
       <div>
         <h4 className="font-bold">Empresa</h4>
-        <p className="text-gray-300">Conoce más sobre nosotros:</p>
+        <p className="text-gray-300 text-xs">Ofrecemos calzado de alta calidad.</p>
+        <p className="text-gray-300 text-xs">Nuestro enfoque está en la comodidad y el estilo.</p>
+        <p className="text-gray-300 text-xs">Comprometidos con la satisfacción del cliente.</p>
         </div>
         <div>
           <h4 className="font-bold">Explora</h4>
@@ -24,7 +26,7 @@ const Footer = () => {
           </ul>
         </div>
       </div>
-      <p className="mt-6">&copy; {new Date().getFullYear()} Zapas el Tatita. Todos los derechos reservados.</p> {/* Añadido mt-4 */}
+      <p className="mt-8 text-center">&copy; {new Date().getFullYear()} Zapas el Tatita. Todos los derechos reservados.</p>{/* Añadido mt-4 */}
     </footer>
   );
 };
