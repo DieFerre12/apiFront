@@ -31,12 +31,14 @@ const Product = () => {
               alt={product.name}
               className="w-full h-48 object-cover mb-4 rounded-md"
             />
-            <div><Link
-              to={`/product/${product.id}`}
-              className="text-blue-500 hover:underline font-semibold text-2xl"
-            >
-              {product.name}
-            </Link></div>
+            <div>
+              <Link
+                to={`/product/${product.id}`}
+                className="text-blue-500 hover:underline font-semibold text-2xl"
+              >
+                {product.name}
+              </Link>
+            </div>
             <h2 className="text-xl font-bold text-black">{product.brand}</h2>
             <p className="text-gray-600 mb-2">{product.price}</p>
           </div>
