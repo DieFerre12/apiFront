@@ -1,23 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
 
-const products = [
-  {
-    id: 1,
-    name: "Zapatilla Modelo A",
-    brand: "Marca 1",
-    price: "$10000",
-    image: "https://nikearprod.vtexassets.com/arquivos/ids/456833/DH3159_001_A_PREM.jpg?v=638149344611730000",
-  },
-  {
-    id: 2,
-    name: "Zapatilla Modelo B",
-    brand: "Marca 2",
-    price: "$12000",
-    image: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_706,h_706/global/397370/02/sv01/fnd/ARG/fmt/png",
-  },
-  // Añade más productos aquí
-];
 
 const Product = () => {
   return (

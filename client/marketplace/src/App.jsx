@@ -9,6 +9,8 @@ import LoginModal from "./components/Login"; // Importa el modal de Login
 import ProductList from "./components/Product/ProductList"; // Asegúrate de que la ruta sea correcta
 import ProductDetails from "./components/Product/ProductDetail"; // Asegúrate de que la ruta sea correcta
 import SizeSelector from "./components/Product/Size";
+import PostList from "./components/PostCarpet/PostList";
+
 
 
 const App = () => {
@@ -25,6 +27,7 @@ const App = () => {
   };
 
   return (
+  
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Navigation />
       <div className="flex-grow p-4">
