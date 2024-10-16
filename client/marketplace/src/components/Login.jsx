@@ -1,5 +1,5 @@
-// src/components/LoginModal.jsx
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const LoginModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
@@ -64,6 +64,14 @@ const LoginModal = ({ isOpen, onClose }) => {
             </button>
           </div>
         </form>
+        <div className="mt-4 text-center">
+          <Link
+            to="/views/Register"
+            className="text-blue-500 hover:text-blue-700 transition duration-300"
+          >
+            Registrarme
+          </Link>
+        </div>
       </div>
     </div>
   );

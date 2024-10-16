@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Navigation from "./components/Navigation";
@@ -10,9 +9,12 @@ import ProductList from "./components/Product/ProductList"; // Asegúrate de que
 import ProductDetail from "./components/Product/ProductDetail"; // Asegúrate de que la ruta sea correcta
 import SizeSelector from "./components/Product/Size";
 import PostList from "./components/PostCarpet/PostList";
+import Cart from "./components/Cart/Cart"; // Importa el componente Cart
+import Register from "./views/Register";
 
 const App = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false); // Estado para controlar el modal de login
+  const [cart, setCart] = useState([]); // Estado del carrito
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -32,7 +34,9 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} /> {/* Ruta principal */}
           <Route path="/product" element={<ProductList />} /> {/* Ruta de productos */}
-          <Route path="/product/:model" element={<ProductDetail />} /> {/* Ruta de detalles por modelo */}
+          <Route path="/product/:model" element={<ProductDetail cart={cart} setCart={setCart} />} /> {/* Ruta de detalles por modelo */}
+          <Route path="/cart" element={<Cart cart={cart} setCart={setCart} />} /> {/* Ruta del carrito */}
+          <Route path="/views/register" element={<Register />} /> {/* Ruta de registro */}
         </Routes>
       </div>
       <Footer />

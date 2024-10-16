@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Importar useNavigate
 import { FaCcVisa, FaCcMastercard } from "react-icons/fa";
 import { SiMercadopago } from "react-icons/si";
 import { ImCross } from "react-icons/im";
+import Cart from "../Cart/Cart"; // Actualizar la ruta de importación
 
-const ProductDetail = () => {
+const ProductDetail = ({ cart, setCart }) => {
   const { model } = useParams(); // Obtener el modelo desde la URL
+  const navigate = useNavigate(); // Inicializar useNavigate
   const [products, setProducts] = useState([]);
   const [sizeStockMap, setSizeStockMap] = useState({});
   const [selectedSize, setSelectedSize] = useState("");
@@ -21,6 +23,7 @@ const ProductDetail = () => {
         if (!response.ok) throw new Error("Productos no encontrados");
 
         const data = await response.json();
+        console.log("Datos obtenidos de la API:", data); // Verificar los datos obtenidos
         if (!Array.isArray(data)) throw new Error("Respuesta de la API no es un array");
 
         setProducts(data);
@@ -43,6 +46,17 @@ const ProductDetail = () => {
 
     fetchProducts();
   }, [model]);
+
+  const addToCart = (product) => {
+    if (!selectedSize) {
+      alert("Por favor, selecciona un talle antes de agregar al carrito.");
+      return;
+    }
+    const productWithSize = { ...product, size: selectedSize };
+    setCart((prevCart) => [...prevCart, productWithSize]);
+    console.log('Producto agregado al carrito:', productWithSize);
+    navigate("/cart"); // Redirigir al carrito
+  };
 
   const handleSizeChange = (event) => {
     setSelectedSize(event.target.value);
@@ -71,7 +85,7 @@ const ProductDetail = () => {
       <div className="flex flex-col md:flex-row md:space-x-8">
         <div className="md:w-1/3 mb-4">
           <img
-            src={selectedProduct.imageUrl}
+            src={selectedProduct.image}
             alt={selectedProduct.model}
             className="w-full h-auto object-cover rounded-lg shadow-lg mb-4 cursor-pointer"
             onClick={() => handleImageClick(selectedProduct.imageUrl)}
@@ -102,13 +116,20 @@ const ProductDetail = () => {
               onChange={handleSizeChange}
             >
               <option value="">Selecciona un talle</option>
-              {Object.entries(sizeStockMap).map(([size, stock]) => (
-                <option key={size} value={size} disabled={stock === 0}>
-                  Talle {size} - {stock > 0 ? `${stock} en stock` : "Agotado"}
+              {Object.keys(sizeStockMap).map((size) => (
+                <option key={size} value={size}>
+                  {size}
                 </option>
               ))}
             </select>
           </div>
+
+          <button
+            onClick={() => addToCart(selectedProduct)}
+            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+          >
+            Comprar
+          </button>
         </div>
       </div>
 
@@ -138,6 +159,8 @@ const ProductDetail = () => {
           </div>
         </div>
       )}
+
+      
     </div>
   );
 };
