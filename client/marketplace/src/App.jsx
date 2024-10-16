@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Navigation from "./components/Navigation";
@@ -10,6 +9,7 @@ import ProductList from "./components/Product/ProductList"; // Asegúrate de que
 import ProductDetail from "./components/Product/ProductDetail"; // Asegúrate de que la ruta sea correcta
 import SizeSelector from "./components/Product/Size";
 import PostList from "./components/PostCarpet/PostList";
+import Register from "./views/Register"; // Importa el componente Register
 
 const App = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false); // Estado para controlar el modal de login
@@ -33,10 +33,11 @@ const App = () => {
           <Route path="/" element={<Home />} /> {/* Ruta principal */}
           <Route path="/product" element={<ProductList />} /> {/* Ruta de productos */}
           <Route path="/product/:model" element={<ProductDetail />} /> {/* Ruta de detalles por modelo */}
+          <Route path="/views/register" element={<Register />} /> {/* Ruta de registro */}
         </Routes>
       </div>
       <Footer />
-      <LoginModal isOpen={isLoginOpen} onClose={handleCloseLogin} /> {/* Modal de Login */}
+      <LoginModal isOpen={isLoginOpen} onClose={handleCloseLogin} /> {/* Modal de login */}
     </div>
   );
 };
