@@ -33,9 +33,11 @@ const App = () => {
         {/* Configuramos las rutas */}
         <Routes>
           <Route path="/" element={<Home />} /> {/* Ruta principal */}
+          
           <Route path="/product" element={<ProductList />} /> {/* Ruta de productos */}
           <Route path="/product/:model" element={<ProductDetail cart={cart} setCart={setCart} />} /> {/* Ruta de detalles por modelo */}
           <Route path="/cart" element={<Cart cart={cart} setCart={setCart} />} /> {/* Ruta del carrito */}
+          <Route path="/login" element={<LoginModal isOpen={true} onClose={() => navigate('/')} />} /> {/* Ruta para login */}
           <Route path="/views/register" element={<Register />} /> {/* Ruta de registro */}
         </Routes>
       </div>

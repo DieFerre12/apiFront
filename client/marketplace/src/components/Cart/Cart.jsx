@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { FaTrash } from 'react-icons/fa';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = ({ cart, setCart }) => {
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Actualizar los productos seleccionados cada vez que cambie el carrito
     setSelectedProducts(cart.map(product => ({
       model: product.model,
-      size: product.size,
+      size: `SIZE_${product.size}`, // Formatear el tamaño
       quantity: product.quantity || 1
     })));
   }, [cart]);
@@ -35,15 +35,16 @@ const Cart = ({ cart, setCart }) => {
   const handleCheckout = async () => {
     try {
       const token = localStorage.getItem('token'); // Obtener el token JWT del almacenamiento local
-      if (!token) {
-        alert('No se encontró el token de autenticación. Por favor, inicia sesión.');
-        history.push('/login'); // Redirigir a la página de inicio de sesión
+      const user = JSON.parse(localStorage.getItem('user')); // Obtener los datos del usuario
+      if (!token || !user || !user.id) {
+        alert('No se encontró el token de autenticación o el ID del usuario. Por favor, inicia sesión.');
+        navigate('/login'); // Redirigir a la página de inicio de sesión
         return;
       }
 
       console.log('Token JWT:', token); // Depuración: Verificar el token JWT
 
-      const response = await fetch('http://localhost:4002/shoppingCart/user/3/addProduct', {
+      const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}/addProduct`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +92,7 @@ const Cart = ({ cart, setCart }) => {
                     <div>
                       <p className="text-lg text-gray-800">{product.model}</p>
                       <p className="text-sm text-gray-600">{product.description}</p>
-                      <p className="text-sm text-gray-600">Talle: {product.size}</p>
+                      <p className="text-sm text-gray-600">Talle: SIZE_{product.size}</p>
                     </div>
                   </div>
                   <div className="flex items-center">
@@ -127,9 +128,9 @@ const Cart = ({ cart, setCart }) => {
           <div className="flex justify-end mt-6">
             <button
               onClick={handleCheckout}
-              className="bg-blue-500 text-white py-2 px-4 rounded"
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
             >
-              Finalizar compra
+              Finalizar Compra
             </button>
           </div>
         </>
