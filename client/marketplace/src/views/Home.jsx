@@ -8,6 +8,7 @@ const Home = () => {
       <p className="text-gray-600 text-lg">
         Encuentra las mejores ofertas en zapatillas deportivas y de moda.
       </p>
+      <img src="./assets/Designer.png" alt="Designer" className="mt-4 w-1/2 h-auto" />
     </div>
   );
 };

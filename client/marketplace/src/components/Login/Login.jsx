@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useFetchUsers from "../Login/useFetchUsers"; // Asegúrate de que la ruta sea correcta
 
@@ -11,7 +11,7 @@ const Login = ({ isOpen, onClose, onLogin }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    
     const API_URL = "http://localhost:4002/api/v1/auth/authenticate"; // Reemplaza con tu URL de API
 
     try {
@@ -30,13 +30,14 @@ const Login = ({ isOpen, onClose, onLogin }) => {
 
       const data = await response.json();
       console.log("Inicio de sesión exitoso:", data);
-
+      
       // Verificar que el token existe en la respuesta
       if (data.access_token) {
         localStorage.setItem("token", data.access_token); // Guardar token JWT en el almacenamiento local
-
+        
         // Buscar coincidencia de email en los usuarios obtenidos
         const loggedInUser = users.find(user => user.email === email);
+        
         if (loggedInUser) {
           const userData = {
             id: loggedInUser.id,
@@ -44,6 +45,7 @@ const Login = ({ isOpen, onClose, onLogin }) => {
             nombre: loggedInUser.nombre,
             apellido: loggedInUser.apellido
           };
+          
           localStorage.setItem("user", JSON.stringify(userData)); // Guardar datos del usuario en el almacenamiento local
           onClose(); // Cierra el modal al terminar el proceso
         } else {
@@ -59,7 +61,7 @@ const Login = ({ isOpen, onClose, onLogin }) => {
   };
 
   const handleRegisterClick = () => {
-    onClose(); // Cierra el modal de inicio de sesión
+    onClose(); // Cierra el modal
     navigate("/views/Register"); // Navega a la página de registro
   };
 
