@@ -1,16 +1,44 @@
-// src/components/LoginModal.jsx
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const LoginModal = ({ isOpen, onClose }) => {
+const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Aquí iría la lógica de autenticación
-    console.log("Iniciando sesión con", email, password);
-    // Cierra el modal al terminar el proceso
-    onClose();
+
+    const API_URL = "http://localhost:4002/api/v1/auth/authenticate"; // Reemplaza con tu URL de API
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(errorData || "Error en el inicio de sesión");
+      }
+
+      const data = await response.json();
+      console.log("Inicio de sesión exitoso:", data);
+      localStorage.setItem("token", data.token);
+      onLogin(); // Llamar a la función de onLogin para actualizar el estado de autenticación
+      onClose(); // Cierra el modal al terminar el proceso
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleRegisterClick = () => {
+    onClose(); // Cierra el modal
+    navigate("/views/Register"); // Navega a la página de registro
   };
 
   if (!isOpen) return null;
@@ -19,6 +47,7 @@ const LoginModal = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
         <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Iniciar Sesión</h2>
+        {error && <p className="text-red-500 text-sm">{error}</p>}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -64,6 +93,14 @@ const LoginModal = ({ isOpen, onClose }) => {
             </button>
           </div>
         </form>
+        <div className="mt-4 text-center">
+          <button
+            onClick={handleRegisterClick}
+            className="text-blue-500 hover:text-blue-700 transition duration-300"
+          >
+            Registrarme
+          </button>
+        </div>
       </div>
     </div>
   );

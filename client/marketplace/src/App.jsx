@@ -10,6 +10,8 @@ import ProductList from "./components/Product/ProductList"; // Asegúrate de que
 import ProductDetail from "./components/Product/ProductDetail"; // Asegúrate de que la ruta sea correcta
 import SizeSelector from "./components/Product/Size";
 import PostList from "./components/PostCarpet/PostList";
+import Admin from "./views/Admin";
+import Register from "./views/Register";
 
 const App = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false); // Estado para controlar el modal de login
@@ -33,6 +35,8 @@ const App = () => {
           <Route path="/" element={<Home />} /> {/* Ruta principal */}
           <Route path="/product" element={<ProductList />} /> {/* Ruta de productos */}
           <Route path="/product/:model" element={<ProductDetail />} /> {/* Ruta de detalles por modelo */}
+          <Route path="/admin" element={<Admin />} /> {/* Ruta de administración */}
+          <Route path="/register" element={<Register />} /> {/* Ruta de registro */}
         </Routes>
       </div>
       <Footer />
