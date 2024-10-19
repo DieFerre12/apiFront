@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import useFetchUsers from "../Login/useFetchUsers"; // Asegúrate de que la ruta sea correcta
 
-const LoginModal = ({ isOpen, onClose, onLogin }) => {
+const Login = ({ isOpen, onClose, onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { users, error: fetchError } = useFetchUsers(); // Usar el hook para obtener los usuarios
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,23 +22,40 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
         body: JSON.stringify({ email, password }),
       });
 
-      // Verifica si la respuesta no es ok
       if (!response.ok) {
-        const errorData = await response.text(); // Usar text() para capturar la respuesta
+        const errorData = await response.text();
         throw new Error(errorData || "Error en el inicio de sesión");
       }
 
       const data = await response.json();
       console.log("Inicio de sesión exitoso:", data);
-      // Guardar token JWT en el almacenamiento local
-      localStorage.setItem("token", data.token);
-      onLogin(); // Llamar a la función de onLogin para actualizar el estado de autenticación
-      onClose(); // Cierra el modal al terminar el proceso
+
+      // Verificar que el token existe en la respuesta
+      if (data.access_token) {
+        localStorage.setItem("token", data.access_token); // Guardar token JWT en el almacenamiento local
+
+        // Buscar coincidencia de email en los usuarios obtenidos
+        const loggedInUser = users.find(user => user.email === email);
+        if (loggedInUser) {
+          const userData = {
+            id: loggedInUser.id,
+            email: loggedInUser.email,
+            nombre: loggedInUser.nombre,
+            apellido: loggedInUser.apellido
+          };
+          localStorage.setItem("user", JSON.stringify(userData)); // Guardar datos del usuario en el almacenamiento local
+          onClose(); // Cierra el modal al terminar el proceso
+        } else {
+          throw new Error("Usuario no encontrado en la base de datos.");
+        }
+      } else {
+        throw new Error("Datos de autenticación incompletos");
+      }
     } catch (err) {
+      console.error("Error durante el inicio de sesión:", err);
       setError(err.message);
     }
   };
-
 
   if (!isOpen) return null;
 
@@ -45,6 +64,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
         <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Iniciar Sesión</h2>
         {error && <p className="text-red-500 text-sm">{error}</p>}
+        {fetchError && <p className="text-red-500 text-sm">{fetchError}</p>}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -103,4 +123,4 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   );
 };
 
-export default LoginModal;
+export default Login;

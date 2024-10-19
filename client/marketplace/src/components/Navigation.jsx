@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png"; // Asegúrate de que la ruta sea correcta
-import Login from "./Login"; // Asegúrate de que la ruta sea correcta
+import Login from "./Login/Login"; // Asegúrate de que la ruta sea correcta
 import NavLink from "./NavLink"; // Importa el componente NavLink
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { IoLogInOutline } from "react-icons/io5";

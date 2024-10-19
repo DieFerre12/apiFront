@@ -37,23 +37,22 @@ const ProductList = () => {
   };
 
   // Función para obtener categorías
-const fetchCategories = async () => {
-  try {
-    const response = await fetch("http://localhost:4002/categories", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-    if (!response.ok) throw new Error("Error al obtener categorías");
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("http://localhost:4002/categories", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error("Error al obtener categorías");
 
-    const data = await response.json();
-    console.log("Categorías obtenidas:", data); // Verificar qué se está recibiendo
-    setCategories(data); // Guardar las categorías en el estado
-  } catch (error) {
-    console.error(error.message);
-    setCategories([]); // En caso de error, limpiar las categorías
-  }
-};
-
+      const data = await response.json();
+      console.log("Categorías obtenidas:", data); // Verificar qué se está recibiendo
+      setCategories(data.content); // Guardar las categorías en el estado
+    } catch (error) {
+      console.error(error.message);
+      setCategories([]); // En caso de error, limpiar las categorías
+    }
+  };
 
   // Obtener productos y categorías cuando el componente se monta
   useEffect(() => {
@@ -66,6 +65,11 @@ const fetchCategories = async () => {
     const categoryId = event.target.value;
     setSelectedCategory(categoryId);
     fetchProducts(categoryId); // Obtener productos filtrados por categoría
+  };
+
+  // Función para capitalizar la primera letra
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
   return (
@@ -86,7 +90,7 @@ const fetchCategories = async () => {
           <option value="">Todas las Categorías</option>
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
-              {category.name}
+              {capitalizeFirstLetter(category.categoryType)}
             </option>
           ))}
         </select>

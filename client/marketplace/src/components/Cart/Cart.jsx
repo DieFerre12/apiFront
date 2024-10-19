@@ -36,13 +36,15 @@ const Cart = ({ cart, setCart }) => {
     try {
       const token = localStorage.getItem('token'); // Obtener el token JWT del almacenamiento local
       const user = JSON.parse(localStorage.getItem('user')); // Obtener los datos del usuario
-      if (!token || !user || !user.id) {
+      if (!token || !user.id) {
         alert('No se encontró el token de autenticación o el ID del usuario. Por favor, inicia sesión.');
         navigate('/login'); // Redirigir a la página de inicio de sesión
         return;
       }
 
       console.log('Token JWT:', token); // Depuración: Verificar el token JWT
+      console.log('Datos del usuario:', user); // Depuración: Verificar los datos del usuario
+      console.log('Productos enviados:', JSON.stringify(selectedProducts, null, 2));
 
       const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}/addProduct`, {
         method: 'POST',
@@ -52,7 +54,7 @@ const Cart = ({ cart, setCart }) => {
         },
         body: JSON.stringify(selectedProducts),
       });
-
+      
       console.log('Respuesta del servidor:', response); // Depuración: Verificar la respuesta del servidor
 
       if (response.status === 403) {
