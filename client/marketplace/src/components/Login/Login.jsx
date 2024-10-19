@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useFetchUsers from "../Login/useFetchUsers"; // Asegúrate de que la ruta sea correcta
 
 const Login = ({ isOpen, onClose, onLogin }) => {
@@ -7,6 +7,7 @@ const Login = ({ isOpen, onClose, onLogin }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { users, error: fetchError } = useFetchUsers(); // Usar el hook para obtener los usuarios
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -55,6 +56,11 @@ const Login = ({ isOpen, onClose, onLogin }) => {
       console.error("Error durante el inicio de sesión:", err);
       setError(err.message);
     }
+  };
+
+  const handleRegisterClick = () => {
+    onClose(); // Cierra el modal de inicio de sesión
+    navigate("/views/Register"); // Navega a la página de registro
   };
 
   if (!isOpen) return null;
@@ -111,12 +117,12 @@ const Login = ({ isOpen, onClose, onLogin }) => {
           </div>
         </form>
         <div className="mt-4 text-center">
-          <Link
-            to="/views/Register"
+          <button
+            onClick={handleRegisterClick}
             className="text-blue-500 hover:text-blue-700 transition duration-300"
           >
             Registrarme
-          </Link>
+          </button>
         </div>
       </div>
     </div>
