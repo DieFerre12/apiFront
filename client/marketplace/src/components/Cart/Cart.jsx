@@ -7,6 +7,8 @@ const Cart = ({ cart, setCart }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("mercado_pago"); // Estado para el método de pago seleccionado
+  const [discountedTotal, setDiscountedTotal] = useState(0); // Estado para el precio con descuento
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -146,20 +148,40 @@ const Cart = ({ cart, setCart }) => {
       console.log("Datos del usuario:", user); // Verificar los datos
 
       const orderDate = new Date().toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
-      const paymentMethod = "mercado_pago"; // Puedes cambiar según el método de pago seleccionado
 
-      const data = await createOrder(user.id, token, paymentMethod, orderDate);
+      const data = await createOrder(user.id, token, paymentMethod, orderDate, discountedTotal);
       console.log('Respuesta del servidor:', data); // Verificar la respuesta del servidor
       alert('Orden creada exitosamente');
       setCart([]);
-      navigate('/');
+
+      // Guardar los datos de la orden en localStorage
+      localStorage.setItem('lastOrder', JSON.stringify(data));
+
+      // Redirigir a la vista de órdenes
+      navigate('/order');
     } catch (error) {
       console.error('Error:', error);
       alert(`Hubo un error al crear la orden: ${error.message}`);
     }
   };
 
+  const calculateDiscountedTotal = (total, paymentMethod) => {
+    let discount = 0;
+    if (paymentMethod === "mercado_pago") {
+      discount = -0.10; // Descuento del 10%
+    } else if (paymentMethod === "tarjeta_debito") {
+      discount = -0.05; // Descuento del 5%
+    } else if (paymentMethod === "tarjeta_credito") {
+      discount = 0.10; // Recargo del 10%
+    }
+    return total + (total * discount);
+  };
+
   const total = cart.reduce((acc, product) => acc + (product.price * product.quantity), 0);
+
+  useEffect(() => {
+    setDiscountedTotal(calculateDiscountedTotal(total, paymentMethod));
+  }, [total, paymentMethod]);
 
   if (loading) {
     return <div>Cargando carrito...</div>;
@@ -217,6 +239,23 @@ const Cart = ({ cart, setCart }) => {
               <p className="text-lg text-gray-800">Total de la compra:</p>
               <p className="text-lg text-gray-800">${total.toFixed(2)}</p>
             </div>
+            <div className="flex justify-between items-center">
+              <p className="text-lg text-gray-800">Total con descuento/recargo:</p>
+              <p className="text-lg text-gray-800">${discountedTotal.toFixed(2)}</p>
+            </div>
+          </div>
+          <div className="mt-6">
+            <label htmlFor="paymentMethod" className="block text-lg text-gray-800 mb-2">Método de Pago:</label>
+            <select
+              id="paymentMethod"
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+              className="w-full p-2 border rounded"
+            >
+              <option value="mercado_pago">Mercado Pago</option>
+              <option value="tarjeta_debito">Tarjeta de Débito</option>
+              <option value="tarjeta_credito">Tarjeta de Crédito</option>
+            </select>
           </div>
           <div className="flex justify-end mt-6">
             <button
