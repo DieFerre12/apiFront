@@ -11,11 +11,12 @@ import Login from "./components/Login/Login";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import Order from "./views/Order";
+import AdminView from "./views/AdminView"; // Asegúrate de importar el componente AdminView
 
 const App = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [cart, setCart] = useState([]);
-  const [user, setUser] = useState(null);
+  const [user, setUser ] = useState(null);
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
@@ -27,7 +28,7 @@ const App = () => {
   };
 
   const handleLogin = (userData) => {
-    setUser(userData);
+    setUser (userData);
     setIsLoginOpen(false);
   };
 
@@ -43,10 +44,15 @@ const App = () => {
           <Route path="/login" element={<Login isOpen={true} onClose={() => navigate('/')} onLogin={handleLogin} />} />
           <Route path="/views/register" element={<Register />} />
           <Route path="/order" element={<Order />} />
+          <Route path="/admin" element={<AdminView />} /> {/* Agrega la ruta para AdminView */}
         </Routes>
       </div>
       <Footer />
       <Login isOpen={isLoginOpen} onClose={handleCloseLogin} onLogin={handleLogin} />
+      {/* Botón para redirigir a AdminView */}
+      <button onClick={() => navigate('/admin')} className="fixed bottom-4 right-4 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition">
+        Ir a Admin
+      </button>
     </div>
   );
 };
