@@ -43,7 +43,6 @@ const App = () => {
           <Route path="/login" element={<Login isOpen={true} onClose={() => navigate('/')} onLogin={handleLogin} />} />
           <Route path="/views/register" element={<Register />} />
           <Route path="/order" element={<Order />} />
-
         </Routes>
       </div>
       <Footer />

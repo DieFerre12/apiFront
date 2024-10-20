@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import ProductList from '../components/Product/ProductList';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
+import ProductGallery from '../components/Home/Products';
 
 const Home = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -15,6 +19,35 @@ const Home = () => {
     autoplaySpeed: 5000, // 5 segundos
     arrows: true,
   };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:4002/products", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (!response.ok) throw new Error("Error al obtener productos");
+
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return <div>Cargando productos...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full text-center bg-gray-100 p-4">
@@ -57,9 +90,8 @@ const Home = () => {
           </div>
         </Slider>
       </div>
-      
-      <h3 className="text-2xl font-semibold text-black mb-4">Productos Recomendados</h3>
-      <ProductList showCategoryFilter={false} />
+      <h1 className="text-3xl font-bold text-black mb-4"> Productos Recomendados </h1>
+      <ProductGallery />
     </div>
   );
 };

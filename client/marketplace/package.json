@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
+    "@react-spring/web": "^9.7.5",
+    "framer-motion": "^11.11.9",
     "marketplace": "file:",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
