@@ -152,7 +152,12 @@ const Cart = ({ cart, setCart }) => {
       console.log('Respuesta del servidor:', data); // Verificar la respuesta del servidor
       alert('Orden creada exitosamente');
       setCart([]);
-      navigate('/');
+
+      // Guardar los datos de la orden en localStorage
+      localStorage.setItem('lastOrder', JSON.stringify(data));
+
+      // Redirigir a la vista de órdenes
+      navigate('/order');
     } catch (error) {
       console.error('Error:', error);
       alert(`Hubo un error al crear la orden: ${error.message}`);

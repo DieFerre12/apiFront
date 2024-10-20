@@ -8,6 +8,7 @@ import ProductDetail from "./components/Product/ProductDetail";
 import Cart from "./components/Cart/Cart";
 import Register from "./views/Register";
 import Login from "./components/Login/Login";
+import Order from "./views/Order";
 
 const App = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -39,6 +40,7 @@ const App = () => {
           <Route path="/cart" element={<Cart cart={cart} setCart={setCart} />} />
           <Route path="/login" element={<Login isOpen={true} onClose={() => navigate('/')} onLogin={handleLogin} />} />
           <Route path="/views/register" element={<Register />} />
+          <Route path="/order" element={<Order />} />
         </Routes>
       </div>
       <Footer />

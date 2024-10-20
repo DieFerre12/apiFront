@@ -20,4 +20,5 @@ export const createOrder = async (userId, token, paymentMethod, orderDate) => {
     }
   
     return await response.json();
+    return data;
   };
