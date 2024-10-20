@@ -8,6 +8,9 @@ import ProductDetail from "./components/Product/ProductDetail"; // Asegúrate de
 import Cart from "./components/Cart/Cart"; // Importa el componente Cart
 import Register from "./views/Register";
 import Login from "./components/Login/Login"; // Importa el componente Login
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
+
 
 const App = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false); // Estado para controlar el modal de login
