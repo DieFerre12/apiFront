@@ -3,17 +3,18 @@ import { Link } from "react-router-dom";
 
 const ProductList = () => {
   const [groupedProducts, setGroupedProducts] = useState({});
-  const [categories, setCategories] = useState([]); // Nueva variable para las categorías
-  const [selectedCategory, setSelectedCategory] = useState(""); // Categoría seleccionada
-  const [images, setImages] = useState({}); // Nueva variable para las imágenes
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [images, setImages] = useState({});
 
-  // Función para obtener productos filtrados por categoría
-  const fetchProducts = async (categoryId = "") => {
+  const fetchProducts = async (categoryType = "") => {
     try {
       let url = "http://localhost:4002/products";
-      if (categoryId) {
-        url += `?category=${categoryId}`;
+      if (categoryType) {
+        url = `http://localhost:4002/products/category/${categoryType}`;
       }
+
+      console.log(`Fetching products from URL: ${url}`); // Debugging line
 
       const response = await fetch(url, {
         method: "GET",
@@ -22,27 +23,35 @@ const ProductList = () => {
       if (!response.ok) throw new Error("Error al obtener productos");
 
       const data = await response.json();
+      console.log("Respuesta completa de productos:", data); // Debugging line
 
-      // Agrupar productos por modelo
-      const grouped = data.content.reduce((acc, product) => {
+      // Asumimos que la respuesta es un array de productos
+      const products = Array.isArray(data) ? data : data.content;
+      if (!products) {
+        throw new Error("La respuesta de la API no contiene productos");
+      }
+
+      console.log("Productos obtenidos:", products); // Debugging line
+
+      const grouped = products.reduce((acc, product) => {
         acc[product.model] = acc[product.model] || [];
         acc[product.model].push(product);
         return acc;
       }, {});
 
+      console.log("Productos agrupados:", grouped); // Debugging line
+
       setGroupedProducts(grouped);
 
-      // Obtener imágenes para cada modelo de producto
       for (const model of Object.keys(grouped)) {
         fetchImageForModel(model);
       }
     } catch (error) {
       console.error(error.message);
-      setGroupedProducts({}); // En caso de error, limpiar los productos
+      setGroupedProducts({});
     }
   };
 
-  // Función para obtener categorías
   const fetchCategories = async () => {
     try {
       const response = await fetch("http://localhost:4002/categories", {
@@ -52,24 +61,22 @@ const ProductList = () => {
       if (!response.ok) throw new Error("Error al obtener categorías");
 
       const data = await response.json();
-      console.log("Categorías obtenidas:", data); // Verificar qué se está recibiendo
-      setCategories(data.content); // Guardar las categorías en el estado
+      setCategories(data.content);
     } catch (error) {
       console.error(error.message);
-      setCategories([]); // En caso de error, limpiar las categorías
+      setCategories([]);
     }
   };
 
-  // Función para obtener la imagen de un modelo
   const fetchImageForModel = async (model) => {
     try {
-      const encodedModel = encodeURIComponent(model); // Codificar el modelo para la URL
-      const token = localStorage.getItem('token'); // Obtener el token JWT del almacenamiento local
+      const encodedModel = encodeURIComponent(model);
+      const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:4002/images/search/${encodedModel}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}` // Enviar el token JWT en el encabezado de autorización si es necesario
+          "Authorization": `Bearer ${token}`
         },
       });
       if (!response.ok) throw new Error(`Error al obtener imagen para el modelo ${model}`);
@@ -86,20 +93,17 @@ const ProductList = () => {
     }
   };
 
-  // Obtener productos, categorías e imágenes cuando el componente se monta
   useEffect(() => {
-    fetchProducts(); // Cargar productos inicialmente
-    fetchCategories(); // Cargar categorías
+    fetchProducts();
+    fetchCategories();
   }, []);
 
-  // Manejar el cambio de categoría
   const handleCategoryChange = (event) => {
-    const categoryId = event.target.value;
-    setSelectedCategory(categoryId);
-    fetchProducts(categoryId); // Obtener productos filtrados por categoría
+    const categoryType = event.target.value;
+    setSelectedCategory(categoryType);
+    fetchProducts(categoryType);
   };
 
-  // Función para capitalizar la primera letra
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
@@ -108,7 +112,6 @@ const ProductList = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold text-black mb-4">Lista de Productos</h1>
 
-      {/* Dropdown para seleccionar categorías */}
       <div className="mb-4">
         <label htmlFor="category" className="mr-2">
           Filtrar por Categoría:
@@ -121,7 +124,7 @@ const ProductList = () => {
         >
           <option value="">Todas las Categorías</option>
           {categories.map((category) => (
-            <option key={category.id} value={category.id}>
+            <option key={category.id} value={category.categoryType}>
               {capitalizeFirstLetter(category.categoryType)}
             </option>
           ))}
@@ -140,7 +143,6 @@ const ProductList = () => {
             >
               <h1 className="text-xl font-semibold">{model}</h1>
               <p>Precio: ${products[0].price}</p>
-              <p>Stock: {products[0].stock}</p>
               {images[model] && (
                 <img
                   src={images[model]}
