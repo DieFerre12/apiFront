@@ -1,0 +1,317 @@
+http://localhost:4002/api/v1/auth/register
+
+{
+    "firstname": "Admin",
+    "lastname": "Admin",
+    "email": "admin@example.com",
+    "password": "admin1234",
+    "role" : "ADMIN"
+}
+
+{
+    "firstname": "Diana",
+    "lastname": "Prince",
+    "email": "diana.prince@example.com",
+    "password": "User2@24",
+    "role": "USER"
+}
+
+http://localhost:4002/api/v1/auth/authenticate
+{
+    "email": "admin@example.com",
+    "password": "admin1234"
+}
+
+{
+"email": "diana.prince@example.com",
+    "password": "user2024"
+}
+
+fefexeneize1911@gmail.com
+Fede1@19
+
+
+
+-----------------------------------------------------------------------------------------------
+
+
+http://localhost:4002/categories/create
+{
+  "categoryType": "RUNNING"
+}
+
+{
+  "categoryType": "BASKETBALL"
+}
+
+{
+  "categoryType": "FOOTBALL"
+}
+
+{
+  "categoryType": "STREET"
+}
+
+{
+  "categoryType": "CASUAL"
+}
+
+
+
+http://localhost:4002/products/new
+{
+    "description": "Jordan planas",
+    "model": "Nike Jordan",
+    "genre": "Male",
+    "brand": "NIKE",
+    "sizeStockMap": {
+        "SIZE_37": 30,
+        "SIZE_38": 30,
+        "SIZE_39": 30,
+        "SIZE_40": 20,
+        "SIZE_41": 10,
+        "SIZE_42": 10
+    },
+    "price": 85000,
+    "categoryType": "BASKETBALL"
+}
+
+{
+    "description": "Zapatillas de running Nike Air Max 2024",
+    "model": "Nike Air Max 2024",
+    "genre": "Unisex",
+    "brand": "NIKE",
+    "sizeStockMap": {
+        "SIZE_37": 35,
+        "SIZE_38": 40,
+        "SIZE_39": 40,
+    },
+   "price": 75000,
+    "categoryType": "RUNNING"
+}
+
+{
+    "description": "Zapatillas de basketball Adidas Pro Bounce",
+    "model": "Adidas Pro Bounce",
+    "genre": "Feminino",
+    "brand": "ADIDAS",
+    "sizeStockMap": {
+        "SIZE_37": 35,
+        "SIZE_41": 10,
+        "SIZE_42": 10
+    },
+    "price": 85000,
+    "categoryType": "BASKETBALL"
+}
+
+{
+    "description": "Zapatillas de basketball Adidas Pro Bounce",
+    "model": "Adidas Pro Bounce",
+    "genre": "Feminino",
+    "brand": "ADIDAS",
+    "sizeStockMap": {
+        "SIZE_37": 35,
+        "SIZE_41": 10,
+        "SIZE_42": 10
+    },
+    "price": 85000,
+    "categoryType": "BASKETBALL"
+}
+
+{
+    "description": "Zapatillas de basketball Adidas Pro Bounce",
+    "model": "Adidas Pro Bounce",
+    "genre": "Feminino",
+    "brand": "ADIDAS",
+    "sizeStockMap": {
+        "SIZE_37": 35,
+        "SIZE_41": 10,
+        "SIZE_42": 10
+    },
+    "price": 85000,
+    "categoryType": "BASKETBALL"
+}
+
+{
+    "description": "Zapatillas casuales Converse Chuck Taylor All Star",
+    "model": "Converse Chuck Taylor All Star",
+    "genre": "Male",
+    "brand": "CONVERSE",
+    "sizeStockMap": {
+        "SIZE_37": 35,
+        "SIZE_41": 10,
+        "SIZE_42": 10
+    },
+    "price": 60000,
+    "categoryType": "CASUAL"
+}
+
+{
+    "description": "Zapatillas casuales Converse Chuck Taylor All Star",
+    "model": "Converse Chuck Taylor All Star",
+    "genre": "Male",
+    "brand": "CONVERSE",
+    "sizeStockMap": {"SIZE_38": 90}
+    "price": 60000,
+    "categoryType": "CASUAL"
+}
+
+{
+    "description": "Zapatillas casuales Converse Chuck Taylor All Star",
+    "model": "Converse Chuck Taylor All Star",
+    "genre": "Male",
+    "brand": "CONVERSE",
+    "size": "SIZE_39",
+    "stock": 90,
+    "price": 60000,
+    "categoryType": "CASUAL"
+}
+
+{
+    "description": "Zapatillas de football Vans UltraRange",
+    "model": "Vans UltraRange",
+    "genre": "Unisex",
+    "brand": "VANS",
+    "size": "SIZE_37",
+    "stock": 70,
+    "price": 55000,
+    "categoryType": "FOOTBALL"
+}
+
+{
+    "description": "Zapatillas de football Vans UltraRange",
+    "model": "Vans UltraRange",
+    "genre": "Unisex",
+    "brand": "VANS",
+    "size": "SIZE_38",
+    "stock": 70,
+    "price": 55000,
+    "categoryType": "FOOTBALL"
+}
+
+{
+    "description": "Zapatillas de football Vans UltraRange",
+    "model": "Vans UltraRange",
+    "genre": "Unisex",
+    "brand": "VANS",
+    "size": "SIZE_39",
+    "stock": 70,
+    "price": 55000,
+    "categoryType": "FOOTBALL"
+}
+
+{
+    "description": "Zapatillas street Puma RS-X",
+    "model": "Puma RS-X",
+    "genre": "Male",
+    "brand": "PUMA",
+    "size": "SIZE_37",
+    "stock": 80,
+    "price": 70000,
+    "categoryType": "STREET"
+}
+
+{
+    "description": "Zapatillas street Puma RS-X",
+    "model": "Puma RS-X",
+    "genre": "Male",
+    "brand": "PUMA",
+    "size": "SIZE_38",
+    "stock": 80,
+    "price": 70000,
+    "categoryType": "STREET"
+}
+{
+    "description": "Zapatillas street Puma RS-X",
+    "model": "Puma RS-X",
+    "genre": "Male",
+    "brand": "PUMA",
+    "size": "SIZE_39",
+    "stock": 80,
+    "price": 70000,
+    "categoryType": "STREET"
+}
+
+
+GET http://localhost:4002/products
+
+GET http://localhost:4002/products/{id}
+
+GET http://localhost:4002/products/category/{categoryType}
+
+PUT http://localhost:4002/products/{model}/{size}
+
+PUT  http://localhost:4002/products/{model}
+
+DELETE http://localhost:4002/products/{model}
+
+PUT  http://localhost:4002/products/new
+
+PUT  http://localhost:4002/products/updateProductPrice
+
+
+
+-------------------------------------------------------------------
+
+SHOPPING CART
+
+{
+"model" : "Nike Air Max 2024",
+"size" : "SIZE_38",
+"quantity" : 5
+}
+
+{
+"model" : "Zapatillas street Puma RS-X",
+"size" : "SIZE_38",
+"quantity" : 3
+}
+
+{
+"model" : "Zapatillas de football Vans UltraRange",
+"size" : "SIZE_38",
+"quantity" : 8
+}
+
+
+GET http://localhost:4002/shoppingCart ADMIN
+
+GET http://localhost:4002/shoppingCart/user/{} USER
+ 
+POST http://localhost:4002/shoppingCart/user/{}/addProduct
+
+PUT http://localhost:4002/shoppingCart/user/1/updateProduct
+
+DELETE http://localhost:4002/shoppingCart/user/removeProduct/{model}/{size}
+
+DELETE http://localhost:4002/shoppingCart/user/{userId}/clearCart
+
+
+----------------------------------------------------------------------
+
+ORDER
+http://localhost:4002/order/create
+{
+    "id": 1,
+    "paymentMethod": "mercado_pago",
+    "orderDate": "2024-09-10"
+}
+
+GET  http://localhost:4002/order/{orderId}
+
+
+----------------------------------------------------------------------------------------------------
+
+POST - http://localhost:4002/images/add/{model} 
+
+	http://localhost:4002/images/{model} 
+GET -  http://localhost:4002/images/{id}
+
+
+
+
+
+consultas para agregar productos
+
+
+

@@ -9,11 +9,12 @@ import Cart from "./components/Cart/Cart";
 import Register from "./views/Register";
 import Login from "./components/Login/Login";
 import Order from "./views/Order";
+import ViewAdmin from "./views/ViewAdmin"; 
 
 const App = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [cart, setCart] = useState([]);
-  const [user, setUser] = useState(null);
+  const [user, setUser ] = useState(null);
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
@@ -25,7 +26,7 @@ const App = () => {
   };
 
   const handleLogin = (userData) => {
-    setUser(userData);
+    setUser (userData);
     setIsLoginOpen(false);
   };
 
@@ -41,10 +42,16 @@ const App = () => {
           <Route path="/login" element={<Login isOpen={true} onClose={() => navigate('/')} onLogin={handleLogin} />} />
           <Route path="/views/register" element={<Register />} />
           <Route path="/order" element={<Order />} />
+          <Route path="/view-admin" element={<ViewAdmin />} /> {/* Ruta para ViewAdmin */}
         </Routes>
       </div>
       <Footer />
       <Login isOpen={isLoginOpen} onClose={handleCloseLogin} onLogin={handleLogin} />
+      
+      {/* Botón para redirigir a ViewAdmin */}
+      <button onClick={() => navigate('/view-admin')} className="fixed bottom-4 right-4 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition">
+        Ir a Admin
+      </button>
     </div>
   );
 };
