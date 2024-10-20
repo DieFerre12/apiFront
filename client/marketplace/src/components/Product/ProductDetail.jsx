@@ -1,40 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Importar useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import { FaCcVisa, FaCcMastercard } from "react-icons/fa";
 import { SiMercadopago } from "react-icons/si";
 import { ImCross } from "react-icons/im";
-import Cart from "../Cart/Cart"; // Actualizar la ruta de importación
 
 const ProductDetail = ({ cart, setCart }) => {
-  const { model } = useParams(); // Obtener el modelo desde la URL
-  const navigate = useNavigate(); // Inicializar useNavigate
+  const { model } = useParams();
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [sizeStockMap, setSizeStockMap] = useState({});
   const [selectedSize, setSelectedSize] = useState("");
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
 
-  // Efecto para obtener los productos del modelo
   useEffect(() => {
     const fetchProducts = async () => {
+      console.log("model", model); // Verificar el modelo que se está pasando
       const API_URL = `http://localhost:4002/products/${model}`;
       try {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Productos no encontrados");
 
         const data = await response.json();
-        console.log("Datos obtenidos de la API:", data); // Verificar los datos obtenidos
+        console.log("Datos obtenidos de la API:", data);
         if (!Array.isArray(data)) throw new Error("Respuesta de la API no es un array");
 
         setProducts(data);
 
-        // Agrupar el stock por modelo y talle
         const groupedSizes = data.reduce((acc, product) => {
           const { size, stock } = product;
           if (!acc[size]) {
             acc[size] = 0;
           }
-          acc[size] += stock; // Sumar el stock por cada talle
+          acc[size] += stock;
           return acc;
         }, {});
 
@@ -47,15 +45,51 @@ const ProductDetail = ({ cart, setCart }) => {
     fetchProducts();
   }, [model]);
 
-  const addToCart = (product) => {
+  const addToCart = async (product) => {
     if (!selectedSize) {
       alert("Por favor, selecciona un talle antes de agregar al carrito.");
       return;
     }
-    const productWithSize = { ...product, size: selectedSize };
-    setCart((prevCart) => [...prevCart, productWithSize]);
-    console.log('Producto agregado al carrito:', productWithSize);
-    navigate("/cart"); // Redirigir al carrito
+
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!token || !user || !user.id) {
+      alert('No se encontró el token de autenticación o el ID del usuario. Por favor, inicia sesión.');
+      navigate('/login');
+      return;
+    }
+
+    const productWithSize = { ...product, size: selectedSize, quantity: 1 };
+
+    try {
+      const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}/addProduct`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(productWithSize)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error al agregar el producto al carrito: ${errorText}`);
+      }
+
+      const data = await response.json();
+      setCart((prevCart) => [...prevCart, data]);
+      console.log('Producto agregado al carrito:', data);
+
+      // Guardar el producto en localStorage
+      const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+      currentCart.push(data);
+      localStorage.setItem('cart', JSON.stringify(currentCart));
+
+      navigate("/cart");
+    } catch (error) {
+      console.error('Error:', error);
+      alert(`Hubo un error al agregar el producto al carrito: ${error.message}`);
+    }
   };
 
   const handleSizeChange = (event) => {
@@ -74,7 +108,7 @@ const ProductDetail = ({ cart, setCart }) => {
 
   if (products.length === 0) return <p>Cargando detalles del producto...</p>;
 
-  const selectedProduct = products[0]; // Usar el primer producto como referencia
+  const selectedProduct = products[0];
 
   return (
     <div className="container mx-auto p-6 bg-gray-100 rounded-lg mt-8 max-w-5xl">
@@ -128,7 +162,7 @@ const ProductDetail = ({ cart, setCart }) => {
             onClick={() => addToCart(selectedProduct)}
             className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
           >
-            Comprar
+            Agregar al carrito
           </button>
         </div>
       </div>
@@ -159,8 +193,6 @@ const ProductDetail = ({ cart, setCart }) => {
           </div>
         </div>
       )}
-
-      
     </div>
   );
 };

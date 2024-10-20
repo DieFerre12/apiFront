@@ -1,82 +1,173 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaTrash } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { createOrder } from '../Order/CreateOrder'; // Importar la función createOrder
 
 const Cart = ({ cart, setCart }) => {
-  const [selectedProducts, setSelectedProducts] = useState([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Actualizar los productos seleccionados cada vez que cambie el carrito
-    setSelectedProducts(cart.map(product => ({
-      model: product.model,
-      size: `SIZE_${product.size}`, // Formatear el tamaño
-      quantity: product.quantity || 1
-    })));
-  }, [cart]);
+    const fetchCart = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!token || !user || !user.id) {
+          alert('No se encontró el token de autenticación o el ID del usuario. Por favor, inicia sesión.');
+          navigate('/login');
+          return;
+        }
 
-  console.log('Estado del carrito:', cart); // Verificar el estado del carrito
-  console.log('Productos seleccionados:', selectedProducts); // Verificar los productos seleccionados
+        const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
 
-  const removeFromCart = (index) => {
-    setCart((prevCart) => prevCart.filter((_, i) => i !== index));
-  };
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Error al obtener el carrito: ${errorText}`);
+        }
 
-  const updateQuantity = (index, quantity) => {
-    setCart((prevCart) =>
-      prevCart.map((item, i) =>
-        i === index ? { ...item, quantity: parseInt(quantity) } : item
-      )
-    );
-  };
+        const data = await response.json();
+        console.log("Datos del carrito:", data); // Verificar los datos del carrito
+        setCart(data.products);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const total = cart.reduce((acc, product) => acc + (product.price * (product.quantity || 1)), 0);
+    fetchCart();
+  }, [navigate, setCart]);
 
-  const handleCheckout = async () => {
+  const removeFromCart = async (product) => {
     try {
-      const token = localStorage.getItem('token'); // Obtener el token JWT del almacenamiento local
-      const user = JSON.parse(localStorage.getItem('user')); // Obtener los datos del usuario
-      if (!token || !user.id) {
+      const { model, size } = product;
+      if (!model || !size) {
+        throw new Error('Model or size is undefined');
+      }
+      console.log("Product Model:", model); // Verificar el model
+      console.log("Product Size:", size); // Verificar el size
+      const token = localStorage.getItem('token');
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!token || !user || !user.id) {
         alert('No se encontró el token de autenticación o el ID del usuario. Por favor, inicia sesión.');
-        navigate('/login'); // Redirigir a la página de inicio de sesión
+        navigate('/login');
         return;
       }
 
-      console.log('Token JWT:', token); // Depuración: Verificar el token JWT
-      console.log('Datos del usuario:', user); // Depuración: Verificar los datos del usuario
-      console.log('Productos enviados:', JSON.stringify(selectedProducts, null, 2));
-
-      const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}/addProduct`, {
-        method: 'POST',
+      const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}/removeProduct/${model}/${size}`, {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Enviar el token JWT en el encabezado de autorización
-        },
-        body: JSON.stringify(selectedProducts),
+          'Authorization': `Bearer ${token}`
+        }
       });
-      
-      console.log('Respuesta del servidor:', response); // Depuración: Verificar la respuesta del servidor
-
-      if (response.status === 403) {
-        const errorText = await response.text();
-        console.error('Error 403:', errorText); // Depuración: Verificar el mensaje de error
-        throw new Error('No tienes permiso para realizar esta acción. Por favor, verifica tus credenciales.');
-      }
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Error:', errorText); // Depuración: Verificar el mensaje de error
-        throw new Error(`Error al guardar el carrito en la base de datos: ${errorText}`);
+        throw new Error(`Error al eliminar el producto del carrito: ${errorText}`);
       }
 
-      const data = await response.json();
-      console.log('Respuesta del servidor:', data);
-      alert('Carrito guardado exitosamente');
+      // Eliminar el producto de localStorage
+      const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+      const updatedCart = currentCart.filter((p) => p.model !== model || p.size !== size);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+
+      setCart((prevCart) => prevCart.filter((p) => p.model !== model || p.size !== size));
     } catch (error) {
-      console.error('Error:', error);
-      alert(`Hubo un error al guardar el carrito: ${error.message}`);
+      setError(error.message);
     }
   };
+
+  const updateQuantity = async (product, quantity) => {
+    try {
+      const { model, size } = product;
+      if (!model || !size) {
+        throw new Error('Model or size is undefined');
+      }
+      console.log("Product Model:", model); // Verificar el model
+      console.log("Product Size:", size); // Verificar el size
+      const token = localStorage.getItem('token');
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!token || !user || !user.id) {
+        alert('No se encontró el token de autenticación o el ID del usuario. Por favor, inicia sesión.');
+        navigate('/login');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}/updateProduct`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ model, size, quantity })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error al actualizar la cantidad del producto: ${errorText}`);
+      }
+
+      setCart((prevCart) =>
+        prevCart.map((p) =>
+          p.model === model && p.size === size ? { ...p, quantity } : p
+        )
+      );
+
+      // Actualizar el producto en localStorage
+      const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+      const updatedCart = currentCart.map((p) =>
+        p.model === model && p.size === size ? { ...p, quantity } : p
+      );
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const handleCheckout = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!token || !user || !user.id) {
+        alert('No se encontró el token de autenticación o el ID del usuario. Por favor, inicia sesión.');
+        navigate('/login');
+        return;
+      }
+
+      console.log("Token JWT:", token); // Verificar el token JWT
+      console.log("Datos del usuario:", user); // Verificar los datos
+
+      const orderDate = new Date().toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
+      const paymentMethod = "mercado_pago"; // Puedes cambiar según el método de pago seleccionado
+
+      const data = await createOrder(user.id, token, paymentMethod, orderDate);
+      console.log('Respuesta del servidor:', data); // Verificar la respuesta del servidor
+      alert('Orden creada exitosamente');
+      setCart([]);
+      navigate('/');
+    } catch (error) {
+      console.error('Error:', error);
+      alert(`Hubo un error al crear la orden: ${error.message}`);
+    }
+  };
+
+  const total = cart.reduce((acc, product) => acc + (product.price * product.quantity), 0);
+
+  if (loading) {
+    return <div>Cargando carrito...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="container mx-auto p-6 bg-gray-100 rounded-lg mt-8 max-w-5xl">
@@ -86,8 +177,8 @@ const Cart = ({ cart, setCart }) => {
       ) : (
         <>
           <ul>
-            {cart.map((product, index) => (
-              <li key={index} className="mb-4">
+            {cart.map((product) => (
+              <li key={`${product.model}-${product.size}`} className="mb-4">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center">
                     <img src={product.image} alt={product.model} className="w-16 h-16 object-cover mr-4" />
@@ -100,8 +191,8 @@ const Cart = ({ cart, setCart }) => {
                   <div className="flex items-center">
                     <p className="text-lg text-gray-800 mr-4">${product.price}</p>
                     <select
-                      value={product.quantity || 1}
-                      onChange={(e) => updateQuantity(index, e.target.value)}
+                      value={product.quantity}
+                      onChange={(e) => updateQuantity(product, e.target.value)}
                       className="w-16 p-1 border rounded mr-4"
                     >
                       {[1, 2, 3, 4, 5].map((num) => (
@@ -111,7 +202,7 @@ const Cart = ({ cart, setCart }) => {
                       ))}
                     </select>
                     <button
-                      onClick={() => removeFromCart(index)}
+                      onClick={() => removeFromCart(product)} // Llamar a removeFromCart con el producto completo
                       className="bg-red-500 text-white p-2 rounded"
                     >
                       <FaTrash />
