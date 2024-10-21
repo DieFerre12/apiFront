@@ -22,6 +22,7 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
       if (!response.ok) throw new Error("Error al obtener categorías");
 
       const data = await response.json();
+      console.log("Categorías obtenidas:", data); // Debugging line
       setCategories(data.content); // Asigna las categorías obtenidas
     } catch (error) {
       console.error(error.message);
@@ -41,15 +42,24 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
     );
   };
 
+  const handleStockChange = (size, stock) => {
+    setSizeStockMap((prevMap) => ({
+      ...prevMap,
+      [size]: parseInt(stock, 10),
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const API_URL = "http://localhost:4002/products/new"; // Reemplaza con tu URL de API
+    const token = localStorage.getItem("token");
 
     try {
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ 
           description: descripcion,
@@ -123,8 +133,8 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
             >
               <option value="">Seleccione una categoría</option>
               {categories.map((categoria) => (
-                <option key={categoria.id} value={categoria.name}>
-                  {categoria.name}
+                <option key={categoria.id} value={categoria.categoryType}>
+                  {categoria.categoryType}
                 </option>
               ))}
             </select>
@@ -163,16 +173,27 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
             <label className="block text-gray-700">Tallas:</label>
             <div className="flex flex-wrap">
               {['SIZE_37', 'SIZE_38', 'SIZE_39', 'SIZE_40', 'SIZE_41', 'SIZE_42'].map((size) => (
-                <label key={size} className="mr-4 mb-2">
-                  <input
-                    type="checkbox"
-                    value={size}
-                    checked={selectedSizes.includes(size)}
-                    onChange={() => handleSizeChange(size)}
-                    className="mr-2"
-                  />
-                  {size}
-                </label>
+                <div key={size} className="w-1/2 mb-4">
+                  <label className="mr-2">
+                    <input
+                      type="checkbox"
+                      value={size}
+                      checked={selectedSizes.includes(size)}
+                      onChange={() => handleSizeChange(size)}
+                      className="mr-2"
+                    />
+                    {size}
+                  </label>
+                  {selectedSizes.includes(size) && (
+                    <input
+                      type="number"
+                      placeholder="Stock"
+                      value={sizeStockMap[size] || ""}
+                      onChange={(e) => handleStockChange(size, e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    />
+                  )}
+                </div>
               ))}
             </div>
           </div>
