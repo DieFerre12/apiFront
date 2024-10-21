@@ -3,6 +3,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import ProductGallery from '../components/Home/Products';
+import Brands from '../components/Brands';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -92,6 +93,8 @@ const Home = () => {
       </div>
       <h1 className="text-3xl font-bold text-black mb-4"> Productos Recomendados </h1>
       <ProductGallery />
+      <h2 className="text-2xl font-bold text-black mb-4">Marcas Populares</h2>
+      <Brands /> 
     </div>
   );
 };
