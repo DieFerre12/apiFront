@@ -45,6 +45,8 @@ const App = () => {
           <Route path="/views/register" element={<Register />} />
           <Route path="/order" element={<Order />} />
           <Route path="/admin" element={<AdminView />} /> {/* Agrega la ruta para AdminView */}
+          <Route path="/products/:brand" element={<ProductList />} />
+
         </Routes>
       </div>
       <Footer />
