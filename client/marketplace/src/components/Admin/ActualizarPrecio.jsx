@@ -1,48 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-const ActualizarStock = ({ isOpen, onClose }) => {
-  const [productId, setProductId] = useState("");
+const ActualizarPrecio = ({ isOpen, onClose }) => {
+  const [model, setModel] = useState(""); // Estado para el campo 'model'
   const [newPrice, setNewPrice] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [categorias, setCategorias] = useState([]); // Para almacenar las categorías
-  const [selectedCategory, setSelectedCategory] = useState(""); // Para la categoría seleccionada
 
-  // Fetch categories cuando el componente se monta
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch("http://localhost:4002/categories", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!response.ok) throw new Error("Error al obtener categorías");
-
-      const data = await response.json();
-      setCategorias(data.content); // Asigna las categorías obtenidas
-    } catch (error) {
-      console.error(error.message);
-      setCategorias([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchCategories(); // Llama a la función para obtener categorías
-  }, []); // El array vacío significa que se ejecuta solo una vez al montar el componente
-
-  const handleSubmit = async (e) => {
+  const handleUpdatePrice = async (e) => {
     e.preventDefault();
-    const API_URL = "http://localhost:4002/products/updateProductPrice"; // Reemplaza con tu URL de API
+    const API_URL = "http://localhost:4002/products/updateProductPrice"; // URL correcta para actualizar el precio
 
     try {
       const response = await fetch(API_URL, {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: productId,
+          model: model,
           price: parseFloat(newPrice),
-          category: selectedCategory, // Incluye la categoría seleccionada
         }),
       });
 
@@ -71,13 +47,13 @@ const ActualizarStock = ({ isOpen, onClose }) => {
         <h2 className="text-xl font-semibold mb-4">Actualizar Precio de Producto</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleUpdatePrice}>
           <div className="mb-4">
-            <label className="block text-gray-700">ID del Producto:</label>
+            <label className="block text-gray-700">Modelo del Producto:</label>
             <input
               type="text"
-              value={productId}
-              onChange={(e) => setProductId(e.target.value)}
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
               required
             />
@@ -91,21 +67,6 @@ const ActualizarStock = ({ isOpen, onClose }) => {
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Categoría:</label>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
- >
-              <option value="">Seleccione una categoría</option>
-              {categorias.map((categoria) => (
-                <option key={categoria.id} value={categoria.id}>
-                  {categoria.name}
-                </option>
-              ))}
-            </select>
           </div>
           <button
             type="submit"
@@ -126,4 +87,4 @@ const ActualizarStock = ({ isOpen, onClose }) => {
   );
 };
 
-export default ActualizarStock;
+export default ActualizarPrecio;

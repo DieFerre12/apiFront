@@ -3,6 +3,9 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import ProductGallery from '../components/Home/Products';
+import DesignerImage from '../assets/Designer.jpeg'; // Importa la imagen
+import zapabanner1 from '../assets/zapabanner1.jpeg';
+import zapas2 from '../assets/zapas2.jpg';
 import Brands from '../components/Brands';
 
 const Home = () => {
@@ -19,6 +22,8 @@ const Home = () => {
     autoplay: true,
     autoplaySpeed: 5000, // 5 segundos
     arrows: true,
+    centerMode: true,
+    centerPadding: '0 px', // Espacio mínimo entre las imágenes
   };
 
   useEffect(() => {
@@ -61,37 +66,58 @@ const Home = () => {
       
       <div className="w-full mb-7 relative max-w-4xl">
         <Slider {...settings}>
-          <div>
+          <div className="px-2">
             <img 
               src="https://tse2.mm.bing.net/th?id=OIG3.DPk295Tju79sqXbVrHLu&pid=ImgGn" 
               alt="Banner 1" 
-              className="w-full h-96 object-contain"
+              className="w-3/10 h-96 object-contain mx-auto" // Ajusta el tamaño aquí
             />
           </div>
-          <div>
+          <div className="px-2">
             <img 
               src="https://tse4.mm.bing.net/th?id=OIG2.rwUg99mQ4OYsfh44aCxp&pid=ImgGn" 
               alt="Banner 2" 
-              className="w-full h-96 object-contain"
+              className="w-3/10 h-96 object-contain mx-auto" // Ajusta el tamaño aquí
             />
           </div>
-          <div>
+          <div className="px-2">
             <img 
               src="https://tse4.mm.bing.net/th?id=OIG3.2iVybp8pFI0xRrcKgxef&pid=ImgGn" 
               alt="Banner 3" 
-              className="w-full h-96 object-contain"
+              className="w-3/10 h-96 object-contain mx-auto" // Ajusta el tamaño aquí
             />
           </div>
-          <div>
+          <div className="px-2">
             <img 
               src="https://tse4.mm.bing.net/th?id=OIG2.kbMHU0Zr3sECl8KqrJQ2&pid=ImgGn" 
               alt="Banner 4" 
-              className="w-full h-96 object-contain"
+              className="w-3/10 h-96 object-contain mx-auto" // Ajusta el tamaño aquí
+            />
+          </div>
+          <div className="px-2">
+            <img 
+              src={DesignerImage} 
+              alt="Designer" 
+              className="w-3/10 h-96 object-contain mx-auto" // Ajusta el tamaño aquí
+            />
+          </div>
+          <div className="px-2">
+            <img 
+              src={zapabanner1} 
+              alt="Designer" 
+              className="w-3/10 h-96 object-contain mx-auto" // Ajusta el tamaño aquí
+            />
+          </div>
+          <div className="px-2">
+            <img 
+              src={zapas2} 
+              alt="Designer" 
+              className="w-3/10 h-96 object-contain mx-auto" // Ajusta el tamaño aquí
             />
           </div>
         </Slider>
       </div>
-      <h1 className="text-3xl font-bold text-black mb-4"> Productos Recomendados </h1>
+      <h1 className="text-5xl font-bold text-black mb-4"> Productos Recomendados </h1>
       <ProductGallery />
       <h2 className="text-2xl font-bold text-black mb-4">Marcas Populares</h2>
       <Brands /> 

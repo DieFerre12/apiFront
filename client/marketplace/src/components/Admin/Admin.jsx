@@ -56,7 +56,7 @@ const Admin = ({ isOpen, onClose }) => {
 
     const productData = { 
       description: descripcion,
-      model, // Asegúrate de que el campo model se envíe correctamente
+      model: model, // Asegúrate de que el campo model se envíe correctamente
       genre: genero,
       brand: marca,
       sizeStockMap,
