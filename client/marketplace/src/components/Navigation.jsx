@@ -33,7 +33,7 @@ const Navigation = () => {
           <div className="flex items-center space-x-8">
             <ul className="flex space-x-8 text-lg font-semibold">
               <li>
-                <NavLink to="/product">Producto</NavLink>
+                <NavLink to="/product">Productos</NavLink>
               </li>
             </ul>
             <div className="flex items-center space-x-2">
