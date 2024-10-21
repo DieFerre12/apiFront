@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
-  const [model, setModel] = useState("");
+const Admin = ({ isOpen, onClose }) => {
+  const [model, setModel] = useState(""); // Estado para el campo 'model'
   const [precio, setPrecio] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [error, setError] = useState("");
@@ -11,6 +11,7 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
   const [marca, setMarca] = useState("");
   const [genero, setGenero] = useState("");
   const [selectedSizes, setSelectedSizes] = useState([]);
+  const [image, setImage] = useState(null); // Estado para la imagen
 
   // Fetch categories cuando el componente se monta
   const fetchCategories = async () => {
@@ -22,7 +23,6 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
       if (!response.ok) throw new Error("Error al obtener categorías");
 
       const data = await response.json();
-      console.log("Categorías obtenidas:", data); // Debugging line
       setCategories(data.content); // Asigna las categorías obtenidas
     } catch (error) {
       console.error(error.message);
@@ -32,7 +32,7 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     fetchCategories(); // Llama a la función para obtener categorías
-  }, []); // El array vacío significa que se ejecuta solo una vez al montar el componente
+  }, []);
 
   const handleSizeChange = (size) => {
     setSelectedSizes((prevSizes) =>
@@ -54,34 +54,60 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
     const API_URL = "http://localhost:4002/products/new"; // Reemplaza con tu URL de API
     const token = localStorage.getItem("token");
 
+    const productData = { 
+      description: descripcion,
+      model, // Asegúrate de que el campo model se envíe correctamente
+      genre: genero,
+      brand: marca,
+      sizeStockMap,
+      price: parseFloat(precio),
+      categoryType: categoria, // Usa la categoría seleccionada
+    };
+
+    console.log("Enviando producto:", productData); // Línea de depuración
+
     try {
+      // Subir la imagen
+      if (image) {
+        const formData = new FormData();
+        formData.append("file", image);
+
+        const imageResponse = await fetch(`http://localhost:4002/images/add/${model}`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (!imageResponse.ok) {
+          const errorData = await imageResponse.text();
+          throw new Error(errorData || "Error al subir la imagen");
+        }
+
+        console.log("Imagen subida exitosamente");
+      }
+
+      // Crear el producto
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ 
-          description: descripcion,
-          model,
-          genre: genero,
-          brand: marca,
-          sizeStockMap,
-          price: parseFloat(precio),
-          categoryType: categoria, // Usa la categoría seleccionada
-        }),
+        body: JSON.stringify(productData),
       });
 
       if (!response.ok) {
         const errorData = await response.text();
-        throw new Error(errorData || "Error al crear la venta");
+        throw new Error(errorData || "Error al crear el producto");
       }
 
       const data = await response.json();
-      console.log("Venta creada exitosamente:", data);
+      console.log("Producto creado exitosamente:", data);
       onClose(); // Cierra el modal o ventana al terminar el proceso
     } catch (err) {
-      console.error("Error durante la creación de la venta:", err);
+      console.error("Error durante la creación del producto:", err);
       setError(err.message);
     }
   };
@@ -197,6 +223,15 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
               ))}
             </div>
           </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Imagen:</label>
+            <input
+              type="file"
+              onChange={(e) => setImage(e.target.files[0])}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              required
+            />
+          </div>
           <button
             type="submit"
             className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 transition"
@@ -216,4 +251,4 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
   );
 };
 
-export default NuevaVentaExclusiva;
+export default Admin;
