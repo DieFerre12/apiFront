@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import AdminFunction from '../components/Admin/Admin'; // Ajusta según el nombre y la ruta correcta
 import ActualizarStock from '../components/Admin/ActualizarStock'; // Asegúrate de que la ruta sea correcta
+import ActualizarPrecio from '../components/Admin/ActualizarPrecio'; // Asegúrate de que la ruta sea correcta
 import EliminarProducto from '../components/Admin/EliminarProducto'; // Asegúrate de que la ruta sea correcta
 
 const ViewAdmin = () => {
   const [isFuncionesAdminOpen, setIsFuncionesAdminOpen] = useState(false);
   const [isActualizarStockOpen, setIsActualizarStockOpen] = useState(false);
+  const [isActualizarPrecioOpen, setIsActualizarPrecioOpen] = useState(false);
   const [isEliminarProductoOpen, setIsEliminarProductoOpen] = useState(false);
 
   const handleFuncionesAdminClick = () => {
@@ -22,6 +24,14 @@ const ViewAdmin = () => {
 
   const closeActualizarStockModal = () => {
     setIsActualizarStockOpen(false);
+  };
+
+  const openActualizarPrecioModal = () => {
+    setIsActualizarPrecioOpen(true);
+  };
+
+  const closeActualizarPrecioModal = () => {
+    setIsActualizarPrecioOpen(false);
   };
 
   const openEliminarProductoModal = () => {
@@ -56,6 +66,14 @@ const ViewAdmin = () => {
         Actualizar Stock de Producto
       </button>
 
+      {/* Botón para abrir Actualizar Precio */}
+      <button
+        onClick={openActualizarPrecioModal}
+        className="mt-4 bg-yellow-500 text-white p-3 rounded-lg shadow-lg hover:bg-yellow-600 transition"
+      >
+        Actualizar Precio de Producto
+      </button>
+
       {/* Botón para abrir Eliminar Producto */}
       <button
         onClick={openEliminarProductoModal}
@@ -66,6 +84,7 @@ const ViewAdmin = () => {
 
       <AdminFunction isOpen={isFuncionesAdminOpen} onClose={handleCloseFuncionesAdmin} />
       <ActualizarStock isOpen={isActualizarStockOpen} onClose={closeActualizarStockModal} />
+      <ActualizarPrecio isOpen={isActualizarPrecioOpen} onClose={closeActualizarPrecioModal} />
       <EliminarProducto isOpen={isEliminarProductoOpen} onClose={closeEliminarProductoModal} />
     </div>
   );

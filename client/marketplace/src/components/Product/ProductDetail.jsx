@@ -12,6 +12,7 @@ const ProductDetail = ({ cart, setCart }) => {
   const [selectedSize, setSelectedSize] = useState("");
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
+  const [productImage, setProductImage] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -42,7 +43,30 @@ const ProductDetail = ({ cart, setCart }) => {
       }
     };
 
+    const fetchImageForModel = async (model) => {
+      try {
+        const encodedModel = encodeURIComponent(model);
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:4002/images/search/${encodedModel}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+        });
+        if (!response.ok) throw new Error(`Error al obtener imagen para el modelo ${model}`);
+    
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+    
+        setProductImage(imageUrl);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
     fetchProducts();
+    fetchImageForModel(model);
   }, [model]);
 
   const addToCart = async (product) => {
@@ -119,10 +143,10 @@ const ProductDetail = ({ cart, setCart }) => {
       <div className="flex flex-col md:flex-row md:space-x-8">
         <div className="md:w-1/3 mb-4">
           <img
-            src={selectedProduct.image}
+            src={productImage}
             alt={selectedProduct.model}
             className="w-full h-auto object-cover rounded-lg shadow-lg mb-4 cursor-pointer"
-            onClick={() => handleImageClick(selectedProduct.imageUrl)}
+            onClick={() => handleImageClick(productImage)}
           />
         </div>
 
