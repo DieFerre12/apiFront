@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
   const [model, setModel] = useState("");
   const [precio, setPrecio] = useState("");
-  const [cantidad, setCantidad] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [error, setError] = useState("");
   const [categoria, setCategoria] = useState(""); // Para la categoría seleccionada
@@ -11,6 +10,7 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
   const [sizeStockMap, setSizeStockMap] = useState({});
   const [marca, setMarca] = useState("");
   const [genero, setGenero] = useState("");
+  const [selectedSizes, setSelectedSizes] = useState([]);
 
   // Fetch categories cuando el componente se monta
   const fetchCategories = async () => {
@@ -32,6 +32,14 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
   useEffect(() => {
     fetchCategories(); // Llama a la función para obtener categorías
   }, []); // El array vacío significa que se ejecuta solo una vez al montar el componente
+
+  const handleSizeChange = (size) => {
+    setSelectedSizes((prevSizes) =>
+      prevSizes.includes(size)
+        ? prevSizes.filter((s) => s !== size)
+        : [...prevSizes, size]
+    );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -97,16 +105,6 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Cantidad:</label>
-            <input
-              type="number"
-              value={cantidad}
-              onChange={(e) => setCantidad(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded -md p-2"
-              required
-            />
-          </div>
-          <div className="mb-4">
             <label className="block text-gray-700">Descripción:</label>
             <textarea
               value={descripcion}
@@ -133,34 +131,50 @@ const NuevaVentaExclusiva = ({ isOpen, onClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Marca:</label>
-            <input
-              type="text"
+            <select
               value={marca}
               onChange={(e) => setMarca(e.target.value)}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
               required
-            />
+            >
+              <option value="">Seleccione una marca</option>
+              <option value="NIKE">NIKE</option>
+              <option value="ADIDAS">ADIDAS</option>
+              <option value="PUMA">PUMA</option>
+              <option value="VANS">VANS</option>
+              <option value="CONVERSE">CONVERSE</option>
+            </select>
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Género:</label>
-            <input
-              type="text"
+            <select
               value={genero}
               onChange={(e) => setGenero(e.target.value)}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
               required
-            />
+            >
+              <option value="">Seleccione un género</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Unisex">Unisex</option>
+            </select>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Stock por Talla:</label>
-            <input
-              type="text"
-              value={sizeStockMap}
-              onChange={(e) => setSizeStockMap({ ...sizeStockMap, [e.target.name]: e.target.value })}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              placeholder='{"SIZE_37": 30}'
-              required
-            />
+            <label className="block text-gray-700">Tallas:</label>
+            <div className="flex flex-wrap">
+              {['SIZE_37', 'SIZE_38', 'SIZE_39', 'SIZE_40', 'SIZE_41', 'SIZE_42'].map((size) => (
+                <label key={size} className="mr-4 mb-2">
+                  <input
+                    type="checkbox"
+                    value={size}
+                    checked={selectedSizes.includes(size)}
+                    onChange={() => handleSizeChange(size)}
+                    className="mr-2"
+                  />
+                  {size}
+                </label>
+              ))}
+            </div>
           </div>
           <button
             type="submit"

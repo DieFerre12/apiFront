@@ -7,18 +7,33 @@ const ProductGallery = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:4002/products");
+      const url = "http://localhost:4002/products";
+      console.log(`Fetching products from URL: ${url}`); // Debugging line
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
       if (!response.ok) throw new Error("Error al obtener productos");
 
       const data = await response.json();
+      console.log("Respuesta completa de productos:", data); // Debugging line
+
       const products = Array.isArray(data) ? data : data.content;
+      if (!products) throw new Error("La respuesta de la API no contiene productos");
+
+      console.log("Productos obtenidos:", products); // Debugging line
+
       const grouped = products.reduce((acc, product) => {
         acc[product.model] = acc[product.model] || [];
         acc[product.model].push(product);
         return acc;
       }, {});
 
+      console.log("Productos agrupados:", grouped); // Debugging line
+
       setGroupedProducts(grouped);
+
       for (const model of Object.keys(grouped)) {
         fetchImageForModel(model);
       }
@@ -30,12 +45,23 @@ const ProductGallery = () => {
 
   const fetchImageForModel = async (model) => {
     try {
-      const response = await fetch(`http://localhost:4002/images/search/${encodeURIComponent(model)}`);
+      const encodedModel = encodeURIComponent(model);
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:4002/images/search/${encodedModel}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (!response.ok) throw new Error(`Error al obtener imagen para el modelo ${model}`);
+
       const blob = await response.blob();
-      setImages((prev) => ({
-        ...prev,
-        [model]: URL.createObjectURL(blob),
+      const imageUrl = URL.createObjectURL(blob);
+
+      setImages((prevImages) => ({
+        ...prevImages,
+        [model]: imageUrl,
       }));
     } catch (error) {
       console.error(error.message);
@@ -56,16 +82,18 @@ const ProductGallery = () => {
             <Link
               key={model}
               to={`/product/${model}`}
-              className="border p-4 rounded-lg shadow-md block transform transition duration-500 hover:scale-105"
+              className="border p-4 rounded-lg shadow-md block transform transition duration-500 hover:scale-105 hover:shadow-lg"
             >
               <h1 className="text-xl font-semibold">{model}</h1>
               <p>Precio: ${products[0].price}</p>
               {images[model] && (
-                <img
-                  src={images[model]}
-                  alt={model}
-                  className="w-full h-48 object-cover mt-2"
-                />
+                <div className="overflow-hidden rounded-md mt-2">
+                  <img
+                    src={images[model]}
+                    alt={model}
+                    className="w-full h-48 object-cover transition-transform duration-500 ease-in-out hover:scale-110"
+                  />
+                </div>
               )}
             </Link>
           ))}
