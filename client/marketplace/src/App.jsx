@@ -31,6 +31,12 @@ const App = () => {
   const handleLogin = (userData) => {
     setUser(userData);
     setIsLoginOpen(false);
+    // Redirigir a la página de administración si el usuario es admin
+    if (userData.role === "ADMIN") {
+      navigate("/admin");
+    } else {
+      navigate("/"); // Redirigir a la página principal o a otra página si no es admin
+    }
   };
 
   return (
@@ -52,10 +58,6 @@ const App = () => {
       </div>
       <Footer />
       <Login isOpen={isLoginOpen} onClose={handleCloseLogin} onLogin={handleLogin} />
-      {/* Botón para redirigir a AdminView */}
-      <button onClick={() => navigate('/admin')} className="fixed bottom-4 right-4 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition">
-        Ir a Admin
-      </button>
     </div>
   );
 };

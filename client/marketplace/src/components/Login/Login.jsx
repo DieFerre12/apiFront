@@ -48,6 +48,13 @@ const Login = ({ isOpen, onClose, onLogin }) => {
           
           localStorage.setItem("user", JSON.stringify(userData)); // Guardar datos del usuario en el almacenamiento local
           onClose(); // Cierra el modal al terminar el proceso
+
+          // Redirigir a la página de administración si el email es admin@example.com
+          if (email === "admin@example.com") {
+            navigate("/admin");
+          } else {
+            navigate("/"); // Redirigir a la página principal o a otra página si no es admin
+          }
         } else {
           throw new Error("Usuario no encontrado en la base de datos.");
         }

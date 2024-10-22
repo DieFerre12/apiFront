@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const ProductList = () => {
-  const { brand } = useParams();
   const [groupedProducts, setGroupedProducts] = useState({});
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [images, setImages] = useState({});
 
-  const fetchProducts = async (categoryType = "", brand = "") => {
+  const fetchProducts = async (categoryType = "") => {
     try {
       let url = "http://localhost:4002/products";
       if (categoryType) {
         url = `http://localhost:4002/products/category/${categoryType}`;
-      } else if (brand) {
-        url = `http://localhost:4002/products/brand/${brand}`;
       }
 
       console.log(`Fetching products from URL: ${url}`); // Debugging line
@@ -97,14 +94,14 @@ const ProductList = () => {
   };
 
   useEffect(() => {
-    fetchProducts(selectedCategory, brand);
+    fetchProducts();
     fetchCategories();
-  }, [selectedCategory, brand]);
+  }, []);
 
   const handleCategoryChange = (event) => {
     const categoryType = event.target.value;
     setSelectedCategory(categoryType);
-    fetchProducts(categoryType, brand);
+    fetchProducts(categoryType);
   };
 
   const capitalizeFirstLetter = (string) => {

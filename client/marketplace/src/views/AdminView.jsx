@@ -1,93 +1,91 @@
-import React, { useState } from 'react';
-import AdminFunction from '../components/Admin/Admin'; // Ajusta según el nombre y la ruta correcta
-import ActualizarStock from '../components/Admin/ActualizarStock'; // Asegúrate de que la ruta sea correcta
-import ActualizarPrecio from '../components/Admin/ActualizarPrecio'; // Asegúrate de que la ruta sea correcta
-import EliminarProducto from '../components/Admin/EliminarProducto'; // Asegúrate de que la ruta sea correcta
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import AdminFunction from '../components/Admin/Admin';
+import ActualizarStock from '../components/Admin/ActualizarStock';
+import ActualizarPrecio from '../components/Admin/ActualizarPrecio';
+import EliminarProducto from '../components/Admin/EliminarProducto';
 
-const ViewAdmin = () => {
+const AdminView = () => {
   const [isFuncionesAdminOpen, setIsFuncionesAdminOpen] = useState(false);
   const [isActualizarStockOpen, setIsActualizarStockOpen] = useState(false);
   const [isActualizarPrecioOpen, setIsActualizarPrecioOpen] = useState(false);
   const [isEliminarProductoOpen, setIsEliminarProductoOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleFuncionesAdminClick = () => {
-    setIsFuncionesAdminOpen(true);
-  };
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
 
-  const handleCloseFuncionesAdmin = () => {
-    setIsFuncionesAdminOpen(false);
-  };
+    const handlePopState = (event) => {
+      if (location.pathname === '/admin') {
+        navigate('/admin');
+      }
+    };
 
-  const openActualizarStockModal = () => {
-    setIsActualizarStockOpen(true);
-  };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('popstate', handlePopState);
 
-  const closeActualizarStockModal = () => {
-    setIsActualizarStockOpen(false);
-  };
-
-  const openActualizarPrecioModal = () => {
-    setIsActualizarPrecioOpen(true);
-  };
-
-  const closeActualizarPrecioModal = () => {
-    setIsActualizarPrecioOpen(false);
-  };
-
-  const openEliminarProductoModal = () => {
-    setIsEliminarProductoOpen(true);
-  };
-
-  const closeEliminarProductoModal = () => {
-    setIsEliminarProductoOpen(false);
-  };
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate, location.pathname]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full text-center">
-      <h2 className="text-4xl font-bold text-black mb-4">Funciones Admin</h2>
-      <p className="text-gray-600 text-lg">
-        Aquí puedes gestionar las funciones administrativas de la aplicación.
-      </p>
-      <img src="./assets/Designer.png" alt="Designer" className="mt-4 w-1/2 h-auto" />
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-8">
+      <div className="bg-white p-8 rounded-lg shadow-lg max-w-xl w-full">
+        <h2 className="text-4xl font-extrabold text-gray-800 mb-6">Funciones Admin</h2>
+        <p className="text-gray-600 text-lg mb-8">
+          Aquí puedes gestionar las funciones administrativas de la aplicación.
+        </p>
 
-      {/* Botón para abrir AdminFunction */}
-      <button
-        onClick={handleFuncionesAdminClick}
-        className="mt-4 bg-blue-500 text-white p-3 rounded-lg shadow-lg hover:bg-blue-600 transition"
-      >
-        Agregar Productos
-      </button>
+        {/* Botón para abrir AdminFunction */}
+        <button
+          onClick={() => setIsFuncionesAdminOpen(true)}
+          className="w-full mb-4 bg-blue-500 text-white py-3 rounded-lg shadow-md 
+          hover:bg-blue-600 transition-transform duration-300 transform hover:scale-105"
+        >
+          Agregar Productos
+        </button>
 
-      {/* Botón para abrir Actualizar Stock */}
-      <button
-        onClick={openActualizarStockModal}
-        className="mt-4 bg-green-500 text-white p-3 rounded-lg shadow-lg hover:bg-green-600 transition"
-      >
-        Actualizar Stock de Producto
-      </button>
+        {/* Botón para abrir Actualizar Stock */}
+        <button
+          onClick={() => setIsActualizarStockOpen(true)}
+          className="w-full mb-4 bg-green-500 text-white py-3 rounded-lg shadow-md 
+          hover:bg-green-600 transition-transform duration-300 transform hover:scale-105"
+        >
+          Actualizar Stock de Producto
+        </button>
 
-      {/* Botón para abrir Actualizar Precio */}
-      <button
-        onClick={openActualizarPrecioModal}
-        className="mt-4 bg-yellow-500 text-white p-3 rounded-lg shadow-lg hover:bg-yellow-600 transition"
-      >
-        Actualizar Precio de Producto
-      </button>
+        {/* Botón para abrir Actualizar Precio */}
+        <button
+          onClick={() => setIsActualizarPrecioOpen(true)}
+          className="w-full mb-4 bg-yellow-500 text-white py-3 rounded-lg shadow-md 
+          hover:bg-yellow-600 transition-transform duration-300 transform hover:scale-105"
+        >
+          Actualizar Precio de Producto
+        </button>
 
-      {/* Botón para abrir Eliminar Producto */}
-      <button
-        onClick={openEliminarProductoModal}
-        className="mt-4 bg-red-500 text-white p-3 rounded-lg shadow-lg hover:bg-red-600 transition"
-      >
-        Eliminar Producto
-      </button>
+        {/* Botón para abrir Eliminar Producto */}
+        <button
+          onClick={() => setIsEliminarProductoOpen(true)}
+          className="w-full bg-red-500 text-white py-3 rounded-lg shadow-md 
+          hover:bg-red-600 transition-transform duration-300 transform hover:scale-105"
+        >
+          Eliminar Producto
+        </button>
 
-      <AdminFunction isOpen={isFuncionesAdminOpen} onClose={handleCloseFuncionesAdmin} />
-      <ActualizarStock isOpen={isActualizarStockOpen} onClose={closeActualizarStockModal} />
-      <ActualizarPrecio isOpen={isActualizarPrecioOpen} onClose={closeActualizarPrecioModal} />
-      <EliminarProducto isOpen={isEliminarProductoOpen} onClose={closeEliminarProductoModal} />
+        {/* Modales */}
+        <AdminFunction isOpen={isFuncionesAdminOpen} onClose={() => setIsFuncionesAdminOpen(false)} />
+        <ActualizarStock isOpen={isActualizarStockOpen} onClose={() => setIsActualizarStockOpen(false)} />
+        <ActualizarPrecio isOpen={isActualizarPrecioOpen} onClose={() => setIsActualizarPrecioOpen(false)} />
+        <EliminarProducto isOpen={isEliminarProductoOpen} onClose={() => setIsEliminarProductoOpen(false)} />
+      </div>
     </div>
   );
 };
 
-export default ViewAdmin;
+export default AdminView;
