@@ -57,6 +57,10 @@ const Home = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full text-center bg-gray-100 p-4">
+      <div className="bg-blue-900 p-4 w-full mb-4"> {/* Agrega un margen inferior aquí */}
+        <Brands /> 
+      </div>
+
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 w-full max-w-4xl">
         <h2 className="text-5xl font-extrabold text-white mb-4">Zapas el tatita</h2>
         <p className="text-gray-300 text-xl mb-6">
@@ -119,8 +123,6 @@ const Home = () => {
       </div>
       <h1 className="text-5xl font-bold text-black mb-4"> Productos Recomendados </h1>
       <ProductGallery />
-      <h2 className="text-2xl font-bold text-black mb-4">Marcas Populares</h2>
-      <Brands /> 
     </div>
   );
 };

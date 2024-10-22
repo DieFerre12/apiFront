@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import Login from "./Login/Login";
 import NavLink from "./NavLink";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import shoppingCart from "../assets/shoppingCart.png";
-import profileUser from "../assets/profile-user.png";
+import profileUser  from "../assets/profile-user.png";
 
 const Navigation = ({ onLoginClick, user }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,30 +16,34 @@ const Navigation = ({ onLoginClick, user }) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       try {
-        // Primero intentamos buscar por modelo
-        let response = await fetch(`http://localhost:4002/products/${encodeURIComponent(searchQuery)}`);
-        
-        if (!response.ok) {
-          // Si no se encuentra por modelo, intentamos buscar por marca
-          response = await fetch(`http://localhost:4002/products/Brands/${encodeURIComponent(searchQuery)}`);
-        }
+        // Verifica si la búsqueda es por marca (todo en mayúsculas)
+        const isBrandSearch = searchQuery === searchQuery.toUpperCase(); // Comprueba si está en mayúsculas
+        let data;
 
-        if (!response.ok) {
-          throw new Error('Producto o marca no encontrada');
-        }
+        if (isBrandSearch) {
+          const brand = searchQuery.trim();
+          const response = await fetch(`http://localhost:4002/products/brand/${encodeURIComponent(brand)}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
 
-        const data = await response.json();
-
-        if (Array.isArray(data)) {
-          // Si es un array, asumimos que es una búsqueda por marca
-          navigate(`/products/${searchQuery}`, { state: { products: data } });
+          if (!response.ok) throw new Error(`Error al obtener productos para la marca ${brand}`);
+          
+          data = await response.json();
+          console.log(`Productos obtenidos para la marca ${brand}:`, data);
+          // Navega a la página de productos con los datos obtenidos
+          navigate(`/products/${brand}`, { state: { products: data } });
         } else {
-          // Si no es un array, asumimos que es un producto individual
+          const response = await fetch(`http://localhost:4002/products/${encodeURIComponent(searchQuery)}`);
+          if (!response.ok) throw new Error('Producto no encontrado');
+          
+          data = await response.json();
+          // Navegamos directamente a la página de detalle del producto
           navigate(`/product/${searchQuery}`);
         }
       } catch (error) {
         console.error("Error en la búsqueda:", error);
-        alert("Producto o marca no encontrada. Por favor, intente con otro término.");
+        alert(error.message || "Producto no encontrado. Por favor, intente con otro modelo o marca.");
       }
     }
   };
@@ -66,14 +70,14 @@ const Navigation = ({ onLoginClick, user }) => {
           <div className="flex items-center space-x-8">
             <ul className="flex space-x-8 text-lg font-semibold">
               <li>
-                <NavLink to="/product">Productos</NavLink>
+                <NavLink to="/product">Producto</NavLink>
               </li>
             </ul>
             <form onSubmit={handleSearch} className="flex items-center space-x-2">
               <input
                 type="text"
                 className="p-2 rounded-md text-gray-800 w-64"
-                placeholder="Buscar por modelo o marca..."
+                placeholder="Buscar por modelo o marca (ej. NIKE para marca)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -90,7 +94,7 @@ const Navigation = ({ onLoginClick, user }) => {
               onClick={handleLoginClick}
               className="flex items-center"
             >
-              <img src={profileUser} alt="Login" className="h-8 w-8" />
+              <img src={profileUser  } alt="Login" className="h-8 w-8" />
             </button>
           </div>
         </div>
