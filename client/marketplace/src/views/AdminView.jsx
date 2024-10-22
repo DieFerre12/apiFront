@@ -14,6 +14,12 @@ const AdminView = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // Verificar si el usuario tiene el email de admin
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user || user.email !== 'admin@example.com') {
+      navigate('/'); // Redirigir a la página principal si no es admin
+    }
+
     const handleBeforeUnload = (event) => {
       event.preventDefault();
       event.returnValue = '';
