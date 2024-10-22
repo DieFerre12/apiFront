@@ -1,22 +1,55 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import Login from "./Login/Login";
 import NavLink from "./NavLink";
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import shoppingCart from "../assets/shoppingCart.png"; // Importa la imagen del carrito
-import profileUser from "../assets/profile-user.png"; // Importa la imagen del login
+import shoppingCart from "../assets/shoppingCart.png";
+import profileUser from "../assets/profile-user.png";
 
-const Navigation = () => {
+const Navigation = ({ onLoginClick, user }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSearch = () => {
-    console.log("Buscando:", searchQuery);
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      try {
+        // Primero intentamos buscar por modelo
+        let response = await fetch(`http://localhost:4002/products/${encodeURIComponent(searchQuery)}`);
+        
+        if (!response.ok) {
+          // Si no se encuentra por modelo, intentamos buscar por marca
+          response = await fetch(`http://localhost:4002/products/Brands/${encodeURIComponent(searchQuery)}`);
+        }
+
+        if (!response.ok) {
+          throw new Error('Producto o marca no encontrada');
+        }
+
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          // Si es un array, asumimos que es una búsqueda por marca
+          navigate(`/products/${searchQuery}`, { state: { products: data } });
+        } else {
+          // Si no es un array, asumimos que es un producto individual
+          navigate(`/product/${searchQuery}`);
+        }
+      } catch (error) {
+        console.error("Error en la búsqueda:", error);
+        alert("Producto o marca no encontrada. Por favor, intente con otro término.");
+      }
+    }
   };
 
   const handleLoginClick = () => {
-    setIsLoginOpen(true);
+    if (onLoginClick) {
+      onLoginClick();
+    } else {
+      setIsLoginOpen(true);
+    }
   };
 
   const closeLogin = () => {
@@ -36,18 +69,18 @@ const Navigation = () => {
                 <NavLink to="/product">Producto</NavLink>
               </li>
             </ul>
-            <div className="flex items-center space-x-2">
+            <form onSubmit={handleSearch} className="flex items-center space-x-2">
               <input
                 type="text"
                 className="p-2 rounded-md text-gray-800 w-64"
-                placeholder="Buscar..."
+                placeholder="Buscar por modelo o marca..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button onClick={handleSearch} className="p-1 bg-transparent flex items-center">
+              <button type="submit" className="p-1 bg-transparent flex items-center">
                 <FaMagnifyingGlass />
               </button>
-            </div>
+            </form>
           </div>
           <div className="flex items-center space-x-8">
             <NavLink to="/cart" className="flex items-center">

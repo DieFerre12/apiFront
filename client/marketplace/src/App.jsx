@@ -11,12 +11,13 @@ import Login from "./components/Login/Login";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import Order from "./views/Order";
-import AdminView from "./views/AdminView"; // Asegúrate de importar el componente AdminView
+import AdminView from "./views/AdminView";
+import SearchResults from "./components/SearchResults"; // Importa el nuevo componente SearchResults
 
 const App = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [cart, setCart] = useState([]);
-  const [user, setUser ] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
@@ -28,13 +29,13 @@ const App = () => {
   };
 
   const handleLogin = (userData) => {
-    setUser (userData);
+    setUser(userData);
     setIsLoginOpen(false);
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      <Navigation />
+      <Navigation onLoginClick={handleLoginClick} user={user} />
       <div className="flex-grow p-4">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -44,9 +45,9 @@ const App = () => {
           <Route path="/login" element={<Login isOpen={true} onClose={() => navigate('/')} onLogin={handleLogin} />} />
           <Route path="/views/register" element={<Register />} />
           <Route path="/order" element={<Order />} />
-          <Route path="/admin" element={<AdminView />} /> {/* Agrega la ruta para AdminView */}
+          <Route path="/admin" element={<AdminView />} />
           <Route path="/products/:brand" element={<ProductList />} />
-
+          <Route path="/search-results" element={<SearchResults />} /> {/* Nueva ruta para los resultados de búsqueda */}
         </Routes>
       </div>
       <Footer />

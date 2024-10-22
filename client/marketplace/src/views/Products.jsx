@@ -1,11 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
-
+import Brands from '../components/Brands';
 
 const Product = () => {
   return (
     <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold text-black mb-4">Marcas Populares</h1>
+      <Brands /> 
       <h1 className="text-3xl font-bold text-black mb-4">Productos Disponibles</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
@@ -28,6 +29,8 @@ const Product = () => {
           </div>
         ))}
       </div>
+      <h1 className="text-2xl font-bold text-black mb-4">Marcas Populares</h1>
+      <Brands /> 
     </div>
   );
 };
