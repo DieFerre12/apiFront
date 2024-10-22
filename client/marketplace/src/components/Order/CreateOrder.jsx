@@ -1,10 +1,13 @@
-export const createOrder = async (userId, token, paymentMethod, orderDate, discountedTotal) => {
+export const createOrder = async (userId, token, paymentMethod, orderDate, discountedTotal, originalTotal) => {
+  const discount = calculateDiscount(paymentMethod);
   const orderData = {
     id: userId,
     paymentMethod: paymentMethod,
     orderDate: orderDate,
     totalPrice: discountedTotal,
-    discount: calculateDiscount(paymentMethod)
+    originalTotal: originalTotal,
+    discount: discount,
+    withSurcharge: discount < 0 ? true : false
   };
 
   const response = await fetch(`http://localhost:4002/order/create`, {
@@ -27,8 +30,10 @@ export const createOrder = async (userId, token, paymentMethod, orderDate, disco
 const calculateDiscount = (paymentMethod) => {
   if (paymentMethod === "mercado_pago") {
     return 0.10;
-  } else if (paymentMethod === "tarjeta_debito") {
+  } else if (paymentMethod === "Tarjeta de debito") {
     return 0.05;
+  } else if (paymentMethod === "Tarjeta de credito") {
+    return -0.10; // Recargo del 10%
   }
   return 0;
 };
