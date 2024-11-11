@@ -1,72 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from "react-router-dom";
+import { fetchProducts, fetchCategories } from '../Redux/slices/productsSlice';
 
 const ProductList = () => {
-  const [groupedProducts, setGroupedProducts] = useState({});
-  const [categories, setCategories] = useState([]);
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.products.items);
+  const categories = useSelector((state) => state.products.categories);
+  const productStatus = useSelector((state) => state.products.status);
+  const error = useSelector((state) => state.products.error);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [images, setImages] = useState({});
 
-  const fetchProducts = async (categoryType = "") => {
-    try {
-      let url = "http://localhost:4002/products";
-      if (categoryType) {
-        url = `http://localhost:4002/products/category/${categoryType}`;
-      }
-
-      console.log(`Fetching products from URL: ${url}`); // Debugging line
-
-      const response = await fetch(url, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!response.ok) throw new Error("Error al obtener productos");
-
-      const data = await response.json();
-      console.log("Respuesta completa de productos:", data); // Debugging line
-
-      // Asumimos que la respuesta es un array de productos
-      const products = Array.isArray(data) ? data : data.content;
-      if (!products) {
-        throw new Error("La respuesta de la API no contiene productos");
-      }
-
-      console.log("Productos obtenidos:", products); // Debugging line
-
-      const grouped = products.reduce((acc, product) => {
-        acc[product.model] = acc[product.model] || [];
-        acc[product.model].push(product);
-        return acc;
-      }, {});
-
-      console.log("Productos agrupados:", grouped); // Debugging line
-
-      setGroupedProducts(grouped);
-
-      for (const model of Object.keys(grouped)) {
-        fetchImageForModel(model);
-      }
-    } catch (error) {
-      console.error(error.message);
-      setGroupedProducts({});
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch("http://localhost:4002/categories", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!response.ok) throw new Error("Error al obtener categorías");
-
-      const data = await response.json();
-      setCategories(data.content);
-    } catch (error) {
-      console.error(error.message);
-      setCategories([]);
-    }
-  };
+  useEffect(() => {
+    dispatch(fetchProducts());
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const fetchImageForModel = async (model) => {
     try {
@@ -94,14 +43,23 @@ const ProductList = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
-    fetchCategories();
-  }, []);
+    if (products.length > 0) {
+      const grouped = products.reduce((acc, product) => {
+        acc[product.model] = acc[product.model] || [];
+        acc[product.model].push(product);
+        return acc;
+      }, {});
+
+      for (const model of Object.keys(grouped)) {
+        fetchImageForModel(model);
+      }
+    }
+  }, [products]);
 
   const handleCategoryChange = (event) => {
     const categoryType = event.target.value;
     setSelectedCategory(categoryType);
-    fetchProducts(categoryType);
+    dispatch(fetchProducts(categoryType));
   };
 
   const capitalizeFirstLetter = (string) => {
@@ -131,11 +89,17 @@ const ProductList = () => {
         </select>
       </div>
 
-      {Object.keys(groupedProducts).length === 0 ? (
-        <p>No hay productos disponibles.</p>
+      {productStatus === 'loading' ? (
+        <p>Cargando productos...</p>
+      ) : productStatus === 'failed' ? (
+        <p>Error: {error}</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Object.entries(groupedProducts).map(([model, products]) => (
+          {Object.entries(products.reduce((acc, product) => {
+            acc[product.model] = acc[product.model] || [];
+            acc[product.model].push(product);
+            return acc;
+          }, {})).map(([model, products]) => (
             <Link
               key={model}
               to={`/product/${model}`}

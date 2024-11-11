@@ -1,56 +1,30 @@
+// src/components/Cart/Cart.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux';
 import { FaTrash } from 'react-icons/fa';
 import { createOrder } from '../Order/CreateOrder';
+import { fetchCart, removeFromCart, updateQuantity, clearCart } from '../Redux/slices/cartSlice';
 
-const Cart = ({ cart, setCart }) => {
+const Cart = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart.items);
+  const loading = useSelector((state) => state.cart.loading);
+  const error = useSelector((state) => state.cart.error);
   const [paymentMethod, setPaymentMethod] = useState("mercado_pago");
   const [discountedTotal, setDiscountedTotal] = useState(0);
   const [images, setImages] = useState({});
 
   useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (!token || !user || !user.id) {
-          alert('No se encontró el token de autenticación o el ID del usuario. Por favor, inicia sesión.');
-          navigate('/login');
-          return;
-        }
-
-        const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Error al obtener el carrito: ${errorText}`);
-        }
-
-        const data = await response.json();
-        console.log("Datos del carrito:", data);
-        setCart(data.products);
-
-        for (const product of data.products) {
-          fetchImageForModel(product.model);
-        }
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCart();
-  }, [navigate, setCart]);
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.id) {
+      dispatch(fetchCart(user.id));
+    } else {
+      alert('No se encontró el ID del usuario. Por favor, inicia sesión.');
+      navigate('/login');
+    }
+  }, [dispatch, navigate]);
 
   const fetchImageForModel = async (model) => {
     try {
@@ -75,85 +49,12 @@ const Cart = ({ cart, setCart }) => {
     }
   };
 
-  const removeFromCart = async (product) => {
-    try {
-      const { model, size } = product;
-      if (!model || !size) {
-        throw new Error('Model or size is undefined');
-      }
-      const token = localStorage.getItem('token');
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (!token || !user || !user.id) {
-        alert('No se encontró el token de autenticación o el ID del usuario. Por favor, inicia sesión.');
-        navigate('/login');
-        return;
-      }
-
-      const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}/removeProduct/${model}/${size}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Error al eliminar el producto del carrito: ${errorText}`);
-      }
-
-      const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
-      const updatedCart = currentCart.filter((p) => p.model !== model || p.size !== size);
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-
-      setCart((prevCart) => prevCart.filter((p) => p.model !== model || p.size !== size));
-    } catch (error) {
-      setError(error.message);
-    }
+  const handleRemoveFromCart = (product) => {
+    dispatch(removeFromCart(product));
   };
 
-  const updateQuantity = async (product, quantity) => {
-    try {
-      const { model, size } = product;
-      if (!model || !size) {
-        throw new Error('Model or size is undefined');
-      }
-      const token = localStorage.getItem('token');
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (!token || !user || !user.id) {
-        alert('No se encontró el token de autenticación o el ID del usuario. Por favor, inicia sesión.');
-        navigate('/login');
-        return;
-      }
-
-      const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}/updateProduct`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ model, size, quantity })
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Error al actualizar la cantidad del producto: ${errorText}`);
-      }
-
-      setCart((prevCart) =>
-        prevCart.map((p) =>
-          p.model === model && p.size === size ? { ...p, quantity } : p
-        )
-      );
-
-      const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
-      const updatedCart = currentCart.map((p) =>
-        p.model === model && p.size === size ? { ...p, quantity } : p
-      );
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-    } catch (error) {
-      setError(error.message);
-    }
+  const handleUpdateQuantity = (product, quantity) => {
+    dispatch(updateQuantity({ ...product, quantity }));
   };
 
   const handleCheckout = async () => {
@@ -170,7 +71,7 @@ const Cart = ({ cart, setCart }) => {
 
       const data = await createOrder(user.id, token, paymentMethod, orderDate, discountedTotal);
       alert('Orden creada exitosamente');
-      setCart([]);
+      dispatch(clearCart());
 
       localStorage.setItem('lastOrder', JSON.stringify(data));
 
@@ -235,14 +136,14 @@ const Cart = ({ cart, setCart }) => {
                   </p>
                   <select
                     value={product.quantity}
-                    onChange={(e) => updateQuantity(product, e.target.value)}
+                    onChange={(e) => handleUpdateQuantity(product, e.target.value)}
                     className="w-16 p-1 border rounded mr-4 shadow-sm transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {[1, 2, 3, 4, 5].map((num) => (
                       <option key={num} value={num}>{num}</option>
                     ))}
                   </select>
-                  <button onClick={() => removeFromCart(product)} className="text-red-500 hover:text-red-700">
+                  <button onClick={() => handleRemoveFromCart(product)} className="text-red-500 hover:text-red-700">
                     <FaTrash />
                   </button>
                 </div>
