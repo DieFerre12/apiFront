@@ -29,6 +29,21 @@ export const fetchCart = createAsyncThunk('cart/fetchCart', async (userId, { get
   }
 });
 
+export const addToCart = createAsyncThunk('cart/addToCart', async (productWithSize, { getState }) => {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user'));
+  const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}/addProduct`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(productWithSize)
+  });
+  const data = await response.json();
+  return data;
+});
+
 const cartSlice = createSlice({
   name: 'cart',
   initialState: {
@@ -37,9 +52,6 @@ const cartSlice = createSlice({
     error: null,
   },
   reducers: {
-    addToCart: (state, action) => {
-      state.items.push(action.payload);
-    },
     removeFromCart: (state, action) => {
       state.items = state.items.filter(item => item.model !== action.payload.model || item.size !== action.payload.size);
     },
@@ -67,9 +79,21 @@ const cartSlice = createSlice({
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(addToCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addToCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items.push(action.payload);
+      })
+      .addCase(addToCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
   },
 });
 
-export const { addToCart, removeFromCart, updateQuantity, clearCart } = cartSlice.actions;
+export const { removeFromCart, updateQuantity, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;

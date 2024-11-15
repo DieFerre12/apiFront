@@ -21,9 +21,7 @@ const Register = () => {
 
   // Validación de la contraseña
   const validatePassword = (password) => {
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return passwordRegex.test(password);
+    return password.length >= 6;
   };
 
   // Manejar el envío del formulario

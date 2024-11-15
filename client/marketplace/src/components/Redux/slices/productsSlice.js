@@ -30,8 +30,13 @@ const productsSlice = createSlice({
     categories: [],
     status: 'idle',
     error: null,
+    selectedSize: "", 
   },
-  reducers: {},
+  reducers: {
+    setSelectedSize: (state, action) => {
+      state.selectedSize = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
@@ -51,4 +56,5 @@ const productsSlice = createSlice({
   },
 });
 
+export const { setSelectedSize } = productsSlice.actions;
 export default productsSlice.reducer;

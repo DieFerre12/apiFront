@@ -5,6 +5,9 @@ import { SiMercadopago } from "react-icons/si";
 import { ImCross } from "react-icons/im";
 import { motion } from "framer-motion"; // Animaciones
 import { MdCheckCircle } from "react-icons/md"; // Icono para el pop-up
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedSize } from '../Redux/slices/productsSlice';
+import { addToCart } from '../Redux/slices/cartSlice';
 
 const ProductDetail = ({ cart, setCart }) => {
   const { model } = useParams();
@@ -16,6 +19,8 @@ const ProductDetail = ({ cart, setCart }) => {
   const [selectedImage, setSelectedImage] = useState("");
   const [productImage, setProductImage] = useState("");
   const [showPopup, setShowPopup] = useState(false); // Estado para el pop-up
+  const dispatch = useDispatch();
+  
 
   useEffect(() => {
     const fetchProducts = async () => {

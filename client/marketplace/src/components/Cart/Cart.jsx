@@ -1,4 +1,3 @@
-// src/components/Cart/Cart.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
@@ -25,6 +24,14 @@ const Cart = () => {
       navigate('/login');
     }
   }, [dispatch, navigate]);
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      cart.forEach(product => {
+        fetchImageForModel(product.model);
+      });
+    }
+  }, [cart]);
 
   const fetchImageForModel = async (model) => {
     try {
