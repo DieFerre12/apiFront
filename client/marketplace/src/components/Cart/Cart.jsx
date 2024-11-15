@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FaTrash } from 'react-icons/fa';
 import { createOrder } from '../Order/CreateOrder';
 import { fetchCart, removeFromCart, updateQuantity, clearCart } from '../Redux/slices/cartSlice';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -108,7 +109,11 @@ const Cart = () => {
   }, [total, paymentMethod]);
 
   if (loading) {
-    return <div>Cargando carrito...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ClipLoader size={70} color={"#123abc"} loading={true} />
+      </div>
+    );
   }
 
   if (error) {

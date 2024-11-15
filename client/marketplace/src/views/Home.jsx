@@ -7,6 +7,7 @@ import DesignerImage from '../assets/Designer.jpeg'; // Importa la imagen
 import zapabanner1 from '../assets/zapabanner1.jpeg';
 import zapas2 from '../assets/zapas2.jpg';
 import Brands from '../components/Brands';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -48,7 +49,11 @@ const Home = () => {
   }, []);
 
   if (loading) {
-    return <div>Cargando productos...</div>;
+    return (
+      <div className="flex justify-center items-center">
+        <ClipLoader size={70} color={"#123abc"} loading={true} />
+      </div>
+    );
   }
 
   if (error) {

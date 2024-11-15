@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from "react-router-dom";
 import { fetchProducts, fetchCategories } from '../Redux/slices/productsSlice';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -90,7 +91,9 @@ const ProductList = () => {
       </div>
 
       {productStatus === 'loading' ? (
-        <p>Cargando productos...</p>
+        <div className="flex justify-center items-center">
+          <ClipLoader size={70} color={"#123abc"} loading={true} />
+        </div>
       ) : productStatus === 'failed' ? (
         <p>Error: {error}</p>
       ) : (

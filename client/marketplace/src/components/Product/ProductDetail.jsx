@@ -8,6 +8,7 @@ import { MdCheckCircle } from "react-icons/md"; // Icono para el pop-up
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedSize } from '../Redux/slices/productsSlice';
 import { addToCart } from '../Redux/slices/cartSlice';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const ProductDetail = ({ cart, setCart }) => {
   const { model } = useParams();
@@ -21,7 +22,6 @@ const ProductDetail = ({ cart, setCart }) => {
   const [showPopup, setShowPopup] = useState(false); // Estado para el pop-up
   const dispatch = useDispatch();
   
-
   useEffect(() => {
     const fetchProducts = async () => {
       const API_URL = `http://localhost:4002/products/${model}`;
@@ -120,7 +120,13 @@ const ProductDetail = ({ cart, setCart }) => {
   const closeImageModal = () => { setShowImageModal(false); setSelectedImage(""); };
   const formatSize = (size) => `Talle ${size.replace('SIZE_', '')}`;
 
-  if (products.length === 0) return <p>Cargando detalles del producto...</p>;
+  if (products.length === 0) {
+    return (
+      <div className="flex justify-center items-center">
+        <ClipLoader size={70} color={"#123abc"} loading={true} />
+      </div>
+    );
+  }
 
   const selectedProduct = products[0];
 
