@@ -1,18 +1,20 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import useFetchUsers from "../Login/useFetchUsers"; // Asegúrate de que la ruta sea correcta
+import { useNavigate } from "react-router-dom";
+import useFetchUsers from "../Login/useFetchUsers";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = ({ isOpen, onClose, onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const { users, error: fetchError } = useFetchUsers(); // Usar el hook para obtener los usuarios
+  const { users, error: fetchError } = useFetchUsers();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     
-    const API_URL = "http://localhost:4002/api/v1/auth/authenticate"; // Reemplaza con tu URL de API
+    const API_URL = "http://localhost:4002/api/v1/auth/authenticate";
 
     try {
       const response = await fetch(API_URL, {
@@ -31,11 +33,9 @@ const Login = ({ isOpen, onClose, onLogin }) => {
       const data = await response.json();
       console.log("Inicio de sesión exitoso:", data);
       
-      // Verificar que el token existe en la respuesta
       if (data.access_token) {
-        localStorage.setItem("token", data.access_token); // Guardar token JWT en el almacenamiento local
+        localStorage.setItem("token", data.access_token);
         
-        // Buscar coincidencia de email en los usuarios obtenidos
         const loggedInUser = users.find(user => user.email === email);
         
         if (loggedInUser) {
@@ -46,17 +46,17 @@ const Login = ({ isOpen, onClose, onLogin }) => {
             apellido: loggedInUser.apellido
           };
           
-          localStorage.setItem("user", JSON.stringify(userData)); // Guardar datos del usuario en el almacenamiento local
-          onClose(); // Cierra el modal al terminar el proceso
+          localStorage.setItem("user", JSON.stringify(userData));
+          onClose();
+          onLogin(userData);
 
-          // Redirigir a la página de administración si el email es admin@example.com
+          // Refrescar la página después de iniciar sesión
           if (email === "admin@example.com") {
             navigate("/admin");
-          } else {
-            navigate("/"); // Redirigir a la página principal o a otra página si no es admin
           }
+          window.location.reload();
         } else {
-          throw new Error("Usuario no encontrado en la base de datos.");
+          throw new Error("Usuario no encontrado.");
         }
       } else {
         throw new Error("Datos de autenticación incompletos");
@@ -68,8 +68,8 @@ const Login = ({ isOpen, onClose, onLogin }) => {
   };
 
   const handleRegisterClick = () => {
-    onClose(); // Cierra el modal
-    navigate("/views/Register"); // Navega a la página de registro
+    onClose();
+    navigate("/views/Register");
   };
 
   if (!isOpen) return null;
@@ -95,12 +95,12 @@ const Login = ({ isOpen, onClose, onLogin }) => {
               placeholder="Ingresa tu correo"
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
               Contraseña
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -108,6 +108,13 @@ const Login = ({ isOpen, onClose, onLogin }) => {
               className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
               placeholder="Ingresa tu contraseña"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 px-3 py-2 text-gray-600"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
           </div>
           <div className="flex items-center justify-between">
             <button
