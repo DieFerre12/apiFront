@@ -44,6 +44,7 @@ const Order = () => {
 
       <div className="mt-4">
         <p><strong>Dirección de Envío:</strong> {order.address}</p>
+        <p><strong>Cuotas:</strong> {order.installments}</p>
       </div>
     </div>
   );

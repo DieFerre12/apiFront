@@ -11,8 +11,6 @@ const Cart = () => {
   const cart = useSelector((state) => state.cart.items);
   const loading = useSelector((state) => state.cart.loading);
   const error = useSelector((state) => state.cart.error);
-  const [paymentMethod, setPaymentMethod] = useState("mercado_pago");
-  const [discountedTotal, setDiscountedTotal] = useState(0);
   const [images, setImages] = useState({});
 
   useEffect(() => {
@@ -74,23 +72,15 @@ const Cart = () => {
     navigate('/userDetails');
   };
 
-  const calculateDiscountedTotal = (total, paymentMethod) => {
-    let discount = 0;
-    if (paymentMethod === "mercado_pago") {
-      discount = -0.10;
-    } else if (paymentMethod === "tarjeta_debito") {
-      discount = -0.05;
-    } else if (paymentMethod === "tarjeta_credito") {
-      discount = 0.10;
-    }
-    return total + (total * discount);
-  };
-
   const total = cart.reduce((acc, product) => acc + (product.price * product.quantity), 0);
 
-  useEffect(() => {
-    setDiscountedTotal(calculateDiscountedTotal(total, paymentMethod));
-  }, [total, paymentMethod]);
+  const calculateDiscountedTotal = (total, discount) => {
+    return total - (total * discount);
+  };
+
+  const mercadoPagoTotal = calculateDiscountedTotal(total, 0.10);
+  const tarjetaDebitoTotal = calculateDiscountedTotal(total, 0.05);
+  const tarjetaCreditoTotal = calculateDiscountedTotal(total, -0.10);
 
   if (loading) {
     return (
@@ -149,8 +139,13 @@ const Cart = () => {
           <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
             <h3 className="text-xl font-bold">Total: ${(total).toFixed(2)}</h3>
             <p className="text-lg font-semibold text-green-600">
-              {paymentMethod === "tarjeta_credito" ? "Total con recargo por tarjeta de crédito: $" : "Total con descuento: $" }
-              {discountedTotal.toFixed(2)}
+              Total con Mercado Pago: ${mercadoPagoTotal.toFixed(2)}
+            </p>
+            <p className="text-lg font-semibold text-green-600">
+              Total con Tarjeta de Débito: ${tarjetaDebitoTotal.toFixed(2)}
+            </p>
+            <p className="text-lg font-semibold text-red-600">
+              Total con Tarjeta de Crédito: ${tarjetaCreditoTotal.toFixed(2)}
             </p>
           </div>
           <div className="mt-6 flex justify-between">
@@ -166,19 +161,6 @@ const Cart = () => {
             >
               Ver compra
             </button>
-          </div>
-          <div className="mt-6">
-            <label htmlFor="paymentMethod" className="block text-lg text-gray-800 mb-2 font-semibold">Método de Pago:</label>
-            <select
-              id="paymentMethod"
-              value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              className="border rounded p-2 shadow-md transition-transform duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="mercado_pago">Mercado Pago</option>
-              <option value="tarjeta_debito">Tarjeta de Débito</option>
-              <option value="tarjeta_credito">Tarjeta de Crédito</option>
-            </select>
           </div>
         </>
       )}

@@ -99,6 +99,8 @@ const UserDetails = () => {
         discountedTotal,                       // Total con descuento
         originalTotal,                         // Total original
         address: formData.address,             // Dirección del formulario
+        installments: formData.installments,   // Cantidad de cuotas
+        products: cart,                        // Productos del carrito
       };
 
       console.log('Enviando datos de la orden:', orderData);  // Verifica los datos
@@ -139,21 +141,21 @@ const UserDetails = () => {
           />
         </div>
         <div>
-          <label htmlFor="cardType" className="block text-gray-600 font-medium">
-            Tipo de Tarjeta:
+          <label htmlFor="paymentMethod" className="block text-gray-600 font-medium">
+            Método de Pago:
           </label>
           <select
-            id="cardType"
-            name="cardType"
-            value={formData.cardType}
-            onChange={handleChange}
+            id="paymentMethod"
+            name="paymentMethod"
+            value={paymentMethod}
+            onChange={handlePaymentMethodChange}
             className="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
             required
           >
-            <option value="">Seleccione un tipo de tarjeta</option>
-            <option value="Visa">Visa</option>
-            <option value="Mastercard">Mastercard</option>
-            <option value="Amex">American Express</option>
+            <option value="">Seleccione un método de pago</option>
+            <option value="mercado_pago">Mercado Pago</option>
+            <option value="tarjeta_debito">Tarjeta de Débito</option>
+            <option value="tarjeta_credito">Tarjeta de Crédito</option>
           </select>
         </div>
         <div>
