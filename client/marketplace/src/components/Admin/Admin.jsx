@@ -13,6 +13,7 @@ const Admin = ({ isOpen, onClose }) => {
   const [genero, setGenero] = useState("");
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [image, setImage] = useState(null); // Estado para la imagen
+  const [successMessage, setSuccessMessage] = useState(""); // Estado para el mensaje de éxito
 
   // Fetch categories cuando el componente se monta
   const fetchCategories = async () => {
