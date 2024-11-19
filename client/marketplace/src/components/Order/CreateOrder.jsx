@@ -1,13 +1,15 @@
-export const createOrder = async (userId, token, paymentMethod, orderDate, discountedTotal, originalTotal) => {
+export const createOrder = async (orderData) => {
+  const { userId, token, paymentMethod, orderDate, discountedTotal, originalTotal, address } = orderData;
   const discount = calculateDiscount(paymentMethod);
-  const orderData = {
+  const orderPayload = {
     id: userId,
     paymentMethod: paymentMethod,
     orderDate: orderDate,
     totalPrice: discountedTotal,
     originalTotal: originalTotal,
     discount: discount,
-    withSurcharge: discount < 0 ? true : false
+    withSurcharge: discount < 0 ? true : false,
+    address: address,
   };
 
   const response = await fetch(`http://localhost:4002/order/create`, {
@@ -16,7 +18,7 @@ export const createOrder = async (userId, token, paymentMethod, orderDate, disco
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify(orderData)
+    body: JSON.stringify(orderPayload)
   });
 
   if (!response.ok) {

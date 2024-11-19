@@ -158,7 +158,7 @@ const Cart = () => {
               className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-transform duration-300 transform hover:scale-105"
               onClick={handleCheckout}
             >
-              Finalizar Compra
+              Ver compra
             </button>
           </div>
           <div className="mt-6">

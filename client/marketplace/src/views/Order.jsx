@@ -18,12 +18,14 @@ const Order = () => {
   return (
     <div className="max-w-md mx-auto my-8 p-6 bg-white border border-gray-300 rounded-lg shadow-md">
       <h1 className="text-2xl font-bold text-center mb-4">Ticket de Compra</h1>
+      
       <div className="mb-4">
         <p><strong>Orden ID:</strong> {order.orderId}</p>
         <p><strong>Fecha de Orden:</strong> {order.orderDate}</p>
         <p><strong>Método de Pago:</strong> {order.paymentMethod}</p>
         <p><strong>Usuario:</strong> {order.userName}</p>
       </div>
+
       <h3 className="text-xl font-semibold mb-2">Productos:</h3>
       <ul className="list-none p-0">
         {order.products.map(product => (
@@ -34,9 +36,14 @@ const Order = () => {
           </li>
         ))}
       </ul>
+
       <div className="mt-4">
         <p><strong>Descuento:</strong> ${order.discount}</p>
         <p><strong>Precio total:</strong> ${order.totalPrice}</p>
+      </div>
+
+      <div className="mt-4">
+        <p><strong>Dirección de Envío:</strong> {order.address}</p>
       </div>
     </div>
   );
