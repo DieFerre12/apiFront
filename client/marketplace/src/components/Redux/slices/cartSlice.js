@@ -53,6 +53,53 @@ export const addToCart = createAsyncThunk('cart/addToCart', async (productWithSi
   }
 });
 
+// Remove from Cart
+export const removeFromCart = createAsyncThunk('cart/removeFromCart', async ({ userId, model, size }, { rejectWithValue }) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:4002/shoppingCart/user/${userId}/removeProduct/${model}/${size}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return rejectWithValue(`Error al eliminar del carrito: ${errorText}`);
+    }
+
+    return { model, size };
+  } catch (error) {
+    return rejectWithValue(`Error al eliminar del carrito: ${error.message}`);
+  }
+});
+
+// Update Quantity
+export const updateQuantity = createAsyncThunk('cart/updateQuantity', async ({ userId, model, size, quantity }, { rejectWithValue }) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:4002/shoppingCart/user/${userId}/updateProduct`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ model, size, quantity }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return rejectWithValue(`Error al actualizar la cantidad: ${errorText}`);
+    }
+
+    return { model, size, quantity };
+  } catch (error) {
+    return rejectWithValue(`Error al actualizar la cantidad: ${error.message}`);
+  }
+});
+
 const cartSlice = createSlice({
   name: 'cart',
   initialState: {
@@ -61,19 +108,6 @@ const cartSlice = createSlice({
     error: null,
   },
   reducers: {
-    removeFromCart: (state, action) => {
-      const { model, size } = action.payload;
-      state.items = state.items.filter(
-        (item) => !(item.model === model && item.size === size)
-      );
-    },
-    updateQuantity: (state, action) => {
-      const { model, size, quantity } = action.payload;
-      const item = state.items.find((item) => item.model === model && item.size === size);
-      if (item) {
-        item.quantity = quantity;
-      }
-    },
     clearCart: (state) => {
       state.items = [];
     },
@@ -103,9 +137,40 @@ const cartSlice = createSlice({
       .addCase(addToCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(removeFromCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(removeFromCart.fulfilled, (state, action) => {
+        state.loading = false;
+        const { model, size } = action.payload;
+        state.items = state.items.filter(
+          (item) => !(item.model === model && item.size === size)
+        );
+      })
+      .addCase(removeFromCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateQuantity.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateQuantity.fulfilled, (state, action) => {
+        state.loading = false;
+        const { model, size, quantity } = action.payload;
+        const item = state.items.find((item) => item.model === model && item.size === size);
+        if (item) {
+          item.quantity = quantity;
+        }
+      })
+      .addCase(updateQuantity.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { removeFromCart, updateQuantity, clearCart } = cartSlice.actions;
+export const { clearCart } = cartSlice.actions;
 export default cartSlice.reducer;

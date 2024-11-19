@@ -57,11 +57,17 @@ const Cart = () => {
   };
 
   const handleRemoveFromCart = (product) => {
-    dispatch(removeFromCart(product));
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.id) {
+      dispatch(removeFromCart({ userId: user.id, model: product.model, size: product.size }));
+    }
   };
 
   const handleUpdateQuantity = (product, quantity) => {
-    dispatch(updateQuantity({ ...product, quantity }));
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.id) {
+      dispatch(updateQuantity({ userId: user.id, model: product.model, size: product.size, quantity }));
+    }
   };
 
   const handleCheckout = () => {
