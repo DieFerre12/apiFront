@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { FaTrash } from 'react-icons/fa';
-import { createOrder } from '../Order/CreateOrder';
 import { fetchCart, removeFromCart, updateQuantity, clearCart } from '../Redux/slices/cartSlice';
 import ClipLoader from "react-spinners/ClipLoader";
 
@@ -65,29 +64,8 @@ const Cart = () => {
     dispatch(updateQuantity({ ...product, quantity }));
   };
 
-  const handleCheckout = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (!token || !user || !user.id) {
-        alert('No se encontró el token de autenticación o el ID del usuario. Por favor, inicia sesión.');
-        navigate('/login');
-        return;
-      }
-
-      const orderDate = new Date().toISOString().split('T')[0];
-
-      const data = await createOrder(user.id, token, paymentMethod, orderDate, discountedTotal);
-      alert('Orden creada exitosamente');
-      dispatch(clearCart());
-
-      localStorage.setItem('lastOrder', JSON.stringify(data));
-
-      navigate('/order');
-    } catch (error) {
-      console.error('Error:', error);
-      alert(`Hubo un error al crear la orden: ${error.message}`);
-    }
+  const handleCheckout = () => {
+    navigate('/userDetails');
   };
 
   const calculateDiscountedTotal = (total, paymentMethod) => {

@@ -1,47 +1,56 @@
-// src/components/redux/slices/cartSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-export const fetchCart = createAsyncThunk('cart/fetchCart', async (userId, { getState }) => {
-  const token = localStorage.getItem('token');
-  const response = await fetch(`http://localhost:4002/shoppingCart/user/${userId}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    }
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Error al obtener el carrito: ${errorText}`);
-  }
-
-  const text = await response.text();
-  if (!text) {
-    return [];
-  }
-
+// Fetch Cart
+export const fetchCart = createAsyncThunk('cart/fetchCart', async (userId, { rejectWithValue }) => {
   try {
-    const data = JSON.parse(text);
-    return data.products;
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:4002/shoppingCart/user/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return rejectWithValue(`Error al obtener el carrito: ${errorText}`);
+    }
+
+    const text = await response.text();
+    if (!text) {
+      return [];
+    }
+
+    return JSON.parse(text).products || [];
   } catch (error) {
-    throw new Error('Error al analizar la respuesta JSON: ' + error.message);
+    return rejectWithValue(`Error al obtener el carrito: ${error.message}`);
   }
 });
 
-export const addToCart = createAsyncThunk('cart/addToCart', async (productWithSize, { getState }) => {
-  const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user'));
-  const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}/addProduct`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify(productWithSize)
-  });
-  const data = await response.json();
-  return data;
+// Add to Cart
+export const addToCart = createAsyncThunk('cart/addToCart', async (productWithSize, { rejectWithValue }) => {
+  try {
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
+    const response = await fetch(`http://localhost:4002/shoppingCart/user/${user.id}/addProduct`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(productWithSize),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return rejectWithValue(`Error al agregar al carrito: ${errorText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    return rejectWithValue(`Error al agregar al carrito: ${error.message}`);
+  }
 });
 
 const cartSlice = createSlice({
@@ -53,11 +62,14 @@ const cartSlice = createSlice({
   },
   reducers: {
     removeFromCart: (state, action) => {
-      state.items = state.items.filter(item => item.model !== action.payload.model || item.size !== action.payload.size);
+      const { model, size } = action.payload;
+      state.items = state.items.filter(
+        (item) => !(item.model === model && item.size === size)
+      );
     },
     updateQuantity: (state, action) => {
       const { model, size, quantity } = action.payload;
-      const item = state.items.find(item => item.model === model && item.size === size);
+      const item = state.items.find((item) => item.model === model && item.size === size);
       if (item) {
         item.quantity = quantity;
       }
@@ -78,7 +90,7 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(addToCart.pending, (state) => {
         state.loading = true;
@@ -90,7 +102,7 @@ const cartSlice = createSlice({
       })
       .addCase(addToCart.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       });
   },
 });

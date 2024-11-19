@@ -13,6 +13,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Order from "./views/Order";
 import AdminView from "./views/AdminView";
 import SearchResults from "./components/SearchResults"; // Importa el nuevo componente SearchResults
+import UserDetails from "./components/PreOrder/UserDetails"; // Importa el componente UserDetails
 
 const App = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -54,6 +55,7 @@ const App = () => {
           <Route path="/admin" element={<AdminView />} />
           <Route path="/products/:brand" element={<ProductList />} />
           <Route path="/search-results" element={<SearchResults />} /> {/* Nueva ruta para los resultados de búsqueda */}
+          <Route path="/userDetails" element={<UserDetails />} /> {/* Nueva ruta para los detalles del usuario */}
         </Routes>
       </div>
       <Footer />

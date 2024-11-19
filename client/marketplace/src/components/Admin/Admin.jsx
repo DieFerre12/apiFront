@@ -12,6 +12,7 @@ const Admin = ({ isOpen, onClose }) => {
   const [genero, setGenero] = useState("");
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [image, setImage] = useState(null); // Estado para la imagen
+  const [successMessage, setSuccessMessage] = useState(""); // Estado para el mensaje de éxito
 
   // Fetch categories cuando el componente se monta
   const fetchCategories = async () => {
@@ -105,7 +106,11 @@ const Admin = ({ isOpen, onClose }) => {
 
       const data = await response.json();
       console.log("Producto creado exitosamente:", data);
-      onClose(); // Cierra el modal o ventana al terminar el proceso
+      setSuccessMessage("Producto creado exitosamente"); // Establece el mensaje de éxito
+      setTimeout(() => {
+        setSuccessMessage(""); // Limpia el mensaje de éxito después de 3 segundos
+        onClose(); // Cierra el modal o ventana al terminar el proceso
+      }, 3000);
     } catch (err) {
       console.error("Error durante la creación del producto:", err);
       setError(err.message);
@@ -119,6 +124,7 @@ const Admin = ({ isOpen, onClose }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-xl font-semibold mb-4">Añadir Producto</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
+        {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700">Modelo:</label>
