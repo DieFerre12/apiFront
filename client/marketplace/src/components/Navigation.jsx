@@ -15,6 +15,9 @@ const Navigation = ({ onLoginClick, user }) => {
   const [showLogoutMessage, setShowLogoutMessage] = useState(false);
   const navigate = useNavigate();
 
+  const BRANDS = ["NIKE", "ADIDAS", "PUMA", "CONVESE", "VANS"]; // Lista de marcas
+  const LOWERCASE_BRANDS = BRANDS.map(brand => brand.toLowerCase()); // Lista de marcas en minúsculas
+
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
@@ -26,11 +29,12 @@ const Navigation = ({ onLoginClick, user }) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       try {
-        const isBrandSearch = searchQuery === searchQuery.toUpperCase();
-        let data;
+        const normalizedSearchQuery = searchQuery.trim().toLowerCase(); // Normaliza la búsqueda a minúsculas
+        const isBrandSearch = LOWERCASE_BRANDS.includes(normalizedSearchQuery); // Comprueba si está en la lista de marcas
 
+        let data;
         if (isBrandSearch) {
-          const brand = searchQuery.trim();
+          const brand = normalizedSearchQuery.toUpperCase(); // Convierte a mayúsculas para la búsqueda
           const response = await fetch(`http://localhost:4002/products/brand/${encodeURIComponent(brand)}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },

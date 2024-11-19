@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 const Admin = ({ isOpen, onClose }) => {
   const [model, setModel] = useState(""); // Estado para el campo 'model'
@@ -105,6 +106,12 @@ const Admin = ({ isOpen, onClose }) => {
 
       const data = await response.json();
       console.log("Producto creado exitosamente:", data);
+      Swal.fire({
+        icon: 'success',
+        title: 'Operación realizada con éxito',
+        showConfirmButton: false,
+        timer: 1500
+      });
       onClose(); // Cierra el modal o ventana al terminar el proceso
     } catch (err) {
       console.error("Error durante la creación del producto:", err);
@@ -115,139 +122,141 @@ const Admin = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-semibold mb-4">Añadir Producto</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700">Modelo:</label>
-            <input
-              type="text"
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Precio:</label>
-            <input
-              type="number"
-              value={precio}
-              onChange={(e) => setPrecio(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Descripción:</label>
-            <textarea
-              value={descripcion}
-              onChange={(e) => setDescripcion(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Categoría:</label>
-            <select
-              value={categoria}
-              onChange={(e) => setCategoria(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              required
-            >
-              <option value="">Seleccione una categoría</option>
-              {categories.map((categoria) => (
-                <option key={categoria.id} value={categoria.categoryType}>
-                  {categoria.categoryType}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Marca:</label>
-            <select
-              value={marca}
-              onChange={(e) => setMarca(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              required
-            >
-              <option value="">Seleccione una marca</option>
-              <option value="NIKE">NIKE</option>
-              <option value="ADIDAS">ADIDAS</option>
-              <option value="PUMA">PUMA</option>
-              <option value="VANS">VANS</option>
-              <option value="CONVERSE">CONVERSE</option>
-            </select>
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Género:</label>
-            <select
-              value={genero}
-              onChange={(e) => setGenero(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              required
-            >
-              <option value="">Seleccione un género</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Unisex">Unisex</option>
-            </select>
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Tallas:</label>
-            <div className="flex flex-wrap">
-              {['SIZE_37', 'SIZE_38', 'SIZE_39', 'SIZE_40', 'SIZE_41', 'SIZE_42'].map((size) => (
-                <div key={size} className="w-1/2 mb-4">
-                  <label className="mr-2">
-                    <input
-                      type="checkbox"
-                      value={size}
-                      checked={selectedSizes.includes(size)}
-                      onChange={() => handleSizeChange(size)}
-                      className="mr-2"
-                    />
-                    {size}
-                  </label>
-                  {selectedSizes.includes(size) && (
-                    <input
-                      type="number"
-                      placeholder="Stock"
-                      value={sizeStockMap[size] || ""}
-                      onChange={(e) => handleStockChange(size, e.target.value)}
-                      className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Imagen:</label>
-            <input
-              type="file"
-              onChange={(e) => setImage(e.target.files[0])}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 transition"
+<div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+  <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
+    <h2 className="text-xl font-semibold mb-4">Añadir Producto</h2>
+    {error && <p className="text-red-500 mb-4">{error}</p>}
+    <form onSubmit={handleSubmit}>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="mb-4">
+          <label className="block text-gray-700">Modelo:</label>
+          <input
+            type="text"
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Precio:</label>
+          <input
+            type="number"
+            value={precio}
+            onChange={(e) => setPrecio(e.target.value)}
+            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Descripción:</label>
+          <textarea
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Categoría:</label>
+          <select
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
+            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            required
           >
-            Crear Producto
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="mt-2 w-full bg-gray-300 text-gray-700 font-semibold py-2 rounded-md hover:bg-gray-400 transition"
+            <option value="">Seleccione una categoría</option>
+            {categories.map((categoria) => (
+              <option key={categoria.id} value={categoria.categoryType}>
+                {categoria.categoryType}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Marca:</label>
+          <select
+            value={marca}
+            onChange={(e) => setMarca(e.target.value)}
+            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            required
           >
-            Cancelar
-          </button>
-        </form>
+            <option value="">Seleccione una marca</option>
+            <option value="NIKE">NIKE</option>
+            <option value="ADIDAS">ADIDAS</option>
+            <option value="PUMA">PUMA</option>
+            <option value="VANS">VANS</option>
+            <option value="CONVERSE">CONVERSE</option>
+          </select>
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Género:</label>
+          <select
+            value={genero}
+            onChange={(e) => setGenero(e.target.value)}
+            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            required
+          >
+            <option value="">Seleccione un género</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Unisex">Unisex</option>
+          </select>
+        </div>
+        <div className="mb-4 col-span-2">
+          <label className="block text-gray-700">Tallas:</label>
+          <div className="flex flex-wrap">
+            {['SIZE_37', 'SIZE_38', 'SIZE_39', 'SIZE_40', 'SIZE_41', 'SIZE_42'].map((size) => (
+              <div key={size} className="w-1/3 mb-4">
+                <label className="mr-2">
+                  <input
+                    type="checkbox"
+                    value={size}
+                    checked={selectedSizes.includes(size)}
+                    onChange={() => handleSizeChange(size)}
+                    className="mr-2"
+                  />
+                  {size}
+                </label>
+                {selectedSizes.includes(size) && (
+                  <input
+                    type="number"
+                    placeholder="Stock"
+                    value={sizeStockMap[size] || ""}
+                    onChange={(e) => handleStockChange(size, e.target.value)}
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mb-4 col-span-2">
+          <label className="block text-gray-700">Imagen:</label>
+          <input
+            type="file"
+            onChange={(e) => setImage(e.target.files[0])}
+            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            required
+          />
+        </div>
       </div>
-    </div>
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 transition"
+      >
+        Crear Producto
+      </button>
+      <button
+        type="button"
+        onClick={onClose}
+        className="mt-2 w-full bg-gray-300 text-gray-700 font-semibold py-2 rounded-md hover:bg-gray-400 transition"
+      >
+        Cancelar
+      </button>
+    </form>
+  </div>
+</div>
   );
 };
 

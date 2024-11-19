@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 
 const EliminarProducto = ({ isOpen, onClose }) => {
   const [model, setModel] = useState("");
@@ -27,6 +28,12 @@ const EliminarProducto = ({ isOpen, onClose }) => {
       }
 
       console.log("Producto eliminado exitosamente");
+      Swal.fire({
+        icon: 'success',
+        title: 'Producto eliminado',
+        showConfirmButton: false,
+        timer: 1500
+      });
       setSuccessMessage("Producto eliminado exitosamente");
       setError(""); // Limpiar errores
       onClose(); // Cierra el modal o ventana al terminar el proceso

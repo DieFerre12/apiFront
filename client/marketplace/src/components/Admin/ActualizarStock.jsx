@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 
 const ActualizarStock = ({ isOpen, onClose }) => {
   const [model, setModel] = useState(""); // Estado para el campo 'model'
@@ -45,6 +46,12 @@ const ActualizarStock = ({ isOpen, onClose }) => {
 
       const data = await response.json();
       console.log("Stock actualizado exitosamente:", data);
+      Swal.fire({
+        icon: 'success',
+        title: 'Stock actualizado',
+        showConfirmButton: false,
+        timer: 1500
+      });
       setSuccessMessage("Stock actualizado exitosamente");
       setError(""); // Limpiar errores
       onClose(); // Cierra el modal o ventana al terminar el proceso
