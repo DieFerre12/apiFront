@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { fetchProducts, fetchCategories } from '../Redux/slices/productsSlice';
 import ClipLoader from "react-spinners/ClipLoader";
 
 const ProductList = () => {
+  const { brand } = useParams();
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.items);
   const categories = useSelector((state) => state.products.categories);
@@ -14,9 +15,9 @@ const ProductList = () => {
   const [images, setImages] = useState({});
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    dispatch(fetchProducts({ categoryType: selectedCategory, brand }));
     dispatch(fetchCategories());
-  }, [dispatch]);
+  }, [dispatch, selectedCategory, brand]);
 
   const fetchImageForModel = async (model) => {
     try {
@@ -60,7 +61,7 @@ const ProductList = () => {
   const handleCategoryChange = (event) => {
     const categoryType = event.target.value;
     setSelectedCategory(categoryType);
-    dispatch(fetchProducts(categoryType));
+    dispatch(fetchProducts({ categoryType, brand }));
   };
 
   const capitalizeFirstLetter = (string) => {

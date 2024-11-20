@@ -1,16 +1,22 @@
 // src/slices/productsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-export const fetchProducts = createAsyncThunk('products/fetchProducts', async (categoryType = "") => {
+export const fetchProducts = createAsyncThunk('products/fetchProducts', async ({ categoryType = "", brand = "" }) => {
   let url = "http://localhost:4002/products";
   if (categoryType) {
     url = `http://localhost:4002/products/category/${categoryType}`;
+  } else if (brand) {
+    url = `http://localhost:4002/products/brand/${brand}`;
   }
+  console.log(`Fetching products from URL: ${url}`); 
+
   const response = await fetch(url, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
+  if (!response.ok) throw new Error("Error al obtener productos");
   const data = await response.json();
+  console.log("Respuesta completa de productos:", data);
   return Array.isArray(data) ? data : data.content;
 });
 
@@ -23,15 +29,19 @@ export const fetchCategories = createAsyncThunk('products/fetchCategories', asyn
   return data.content;
 });
 
+// Estado inicial
+const initialState = {
+  items: [],
+  categories: [],
+  status: 'idle',
+  error: null,
+  selectedSize: "", 
+};
+
+// Slice de productos
 const productsSlice = createSlice({
   name: 'products',
-  initialState: {
-    items: [],
-    categories: [],
-    status: 'idle',
-    error: null,
-    selectedSize: "", 
-  },
+  initialState,
   reducers: {
     setSelectedSize: (state, action) => {
       state.selectedSize = action.payload;
@@ -56,5 +66,6 @@ const productsSlice = createSlice({
   },
 });
 
+// Exportar acciones y reducer
 export const { setSelectedSize } = productsSlice.actions;
 export default productsSlice.reducer;
