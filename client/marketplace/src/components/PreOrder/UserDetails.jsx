@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createOrder } from '../Order/CreateOrder';
+import { useDispatch, useSelector } from 'react-redux';
+import { createOrder, setAddress, setInstallments } from '../Redux/slices/orderSlice';
 
 const UserDetails = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const address = useSelector((state) => state.order.address);
+  const installments = useSelector((state) => state.order.installments);
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
   const [formData, setFormData] = useState({
-    address: '',
+    address: address || '',
     cardNumber: '',
     cardExpiry: '',
     cardCVC: '',
     cardType: '',
-    installments: '',
+    installments: installments || '',
   });
   const [error, setError] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
@@ -55,6 +59,14 @@ const UserDetails = () => {
       ...formData,
       [name]: value,
     });
+
+    // Guardar los datos en el estado de Redux
+    if (name === 'address') {
+      dispatch(setAddress(value));
+    }
+    if (name === 'installments') {
+      dispatch(setInstallments(value));
+    }
   };
 
   const handlePaymentMethodChange = (e) => {
@@ -105,16 +117,24 @@ const UserDetails = () => {
 
       console.log('Enviando datos de la orden:', orderData);  // Verifica los datos
 
-      // Llamamos a la función createOrder pasándole el objeto con todos los datos
-      const createdOrder = await createOrder(orderData);
+      // Llamamos a la acción createOrder pasándole el objeto con todos los datos
+      const resultAction = await dispatch(createOrder(orderData));
 
-      // Si la orden se crea correctamente
-      alert('Orden creada exitosamente');
-      localStorage.removeItem('cart');  // Limpiamos el carrito
-      localStorage.setItem('lastOrder', JSON.stringify(createdOrder));  // Guardamos la orden creada
+      if (createOrder.fulfilled.match(resultAction)) {
+        // Si la orden se crea correctamente
+        alert('Orden creada exitosamente');
+        localStorage.removeItem('cart');  // Limpiamos el carrito
+        localStorage.setItem('lastOrder', JSON.stringify({
+          ...resultAction.payload,
+          address: formData.address,
+          installments: formData.installments,
+        }));  // Guardamos la orden creada
 
-      // Redirigimos al usuario a la página de orden
-      navigate('/order');
+        // Redirigimos al usuario a la página de orden
+        navigate('/order');
+      } else {
+        throw new Error(resultAction.payload || 'Error al crear la orden');
+      }
     } catch (error) {
       console.error('Error al crear la orden:', error);
       setError(`Hubo un error al crear la orden: ${error.message}`);

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 // Crear Orden
 export const createOrder = createAsyncThunk('order/createOrder', async (orderData, { rejectWithValue }) => {
-  const { userId, token, paymentMethod, orderDate, discountedTotal, originalTotal, address } = orderData;
+  const { userId, token, paymentMethod, orderDate, discountedTotal, originalTotal, address, installments } = orderData;
   const discount = calculateDiscount(paymentMethod);
   const orderPayload = {
     id: userId,
@@ -13,7 +13,10 @@ export const createOrder = createAsyncThunk('order/createOrder', async (orderDat
     discount: discount,
     withSurcharge: discount < 0 ? true : false,
     address: address,
+    installments: installments,
   };
+
+  console.log('Payload de la orden:', orderPayload); // Agregar detalles de depuración
 
   try {
     const response = await fetch(`http://localhost:4002/order/create`, {
@@ -27,11 +30,13 @@ export const createOrder = createAsyncThunk('order/createOrder', async (orderDat
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error('Error al crear la orden:', errorText); // Agregar detalles de depuración
       return rejectWithValue(`Error al crear la orden: ${errorText}`);
     }
 
     return await response.json();
   } catch (error) {
+    console.error('Error al crear la orden:', error.message); // Agregar detalles de depuración
     return rejectWithValue(`Error al crear la orden: ${error.message}`);
   }
 });
@@ -53,8 +58,17 @@ const orderSlice = createSlice({
     order: null,
     loading: false,
     error: null,
+    address: '',
+    installments: '',
   },
-  reducers: {},
+  reducers: {
+    setAddress: (state, action) => {
+      state.address = action.payload;
+    },
+    setInstallments: (state, action) => {
+      state.installments = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createOrder.pending, (state) => {
@@ -72,4 +86,5 @@ const orderSlice = createSlice({
   },
 });
 
+export const { setAddress, setInstallments } = orderSlice.actions;
 export default orderSlice.reducer;
