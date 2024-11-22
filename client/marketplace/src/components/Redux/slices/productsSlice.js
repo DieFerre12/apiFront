@@ -29,7 +29,6 @@ export const fetchCategories = createAsyncThunk('products/fetchCategories', asyn
   return data.content;
 });
 
-// Estado inicial
 const initialState = {
   items: [],
   categories: [],
@@ -38,7 +37,6 @@ const initialState = {
   selectedSize: "", 
 };
 
-// Slice de productos
 const productsSlice = createSlice({
   name: 'products',
   initialState,
