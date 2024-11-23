@@ -14,8 +14,9 @@ const Cart = () => {
   const [images, setImages] = useState({});
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.id) {
+    if (token && user && user.id) {
       dispatch(fetchCart(user.id));
     } else {
       alert('No se encontró el ID del usuario. Por favor, inicia sesión.');
@@ -34,12 +35,10 @@ const Cart = () => {
   const fetchImageForModel = async (model) => {
     try {
       const encodedModel = encodeURIComponent(model);
-      const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:4002/images/search/${encodedModel}`, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          "Content-Type": "application/json"
         },
       });
 

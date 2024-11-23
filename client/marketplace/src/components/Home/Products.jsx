@@ -47,12 +47,15 @@ const ProductGallery = () => {
     try {
       const encodedModel = encodeURIComponent(model);
       const token = localStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
       const response = await fetch(`http://localhost:4002/images/search/${encodedModel}`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: headers,
       });
       if (!response.ok) throw new Error(`Error al obtener imagen para el modelo ${model}`);
 

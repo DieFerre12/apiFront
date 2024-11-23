@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import logo from "../assets/logo.png";
 import Login from "./Login/Login";
 import NavLink from "./NavLink";
@@ -12,7 +13,6 @@ const Navigation = ({ onLoginClick, user }) => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
-  const [showLogoutMessage, setShowLogoutMessage] = useState(false);
   const navigate = useNavigate();
 
   const BRANDS = ["NIKE", "ADIDAS", "PUMA", "CONVESE", "VANS"]; // Lista de marcas
@@ -80,13 +80,24 @@ const Navigation = ({ onLoginClick, user }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
     localStorage.removeItem("user");
     setLoggedInUser(null);
     setIsUserMenuOpen(false);
-    setShowLogoutMessage(true);
-    setTimeout(() => setShowLogoutMessage(false), 3000); // Ocultar el mensaje después de 3 segundos
-    navigate("/");
+    Swal.fire({
+      position: 'top-end',
+      icon: 'success',
+      title: 'Sesión cerrada correctamente',
+      showConfirmButton: false,
+      timer: 3000,
+      toast: true,
+      customClass: {
+        popup: 'swal2-sm'
+      }
+    }).then(() => {
+      navigate("/");
+      // Refrescar la página después de cerrar sesión
+      window.location.reload();
+    });
   };
 
   return (
@@ -126,7 +137,7 @@ const Navigation = ({ onLoginClick, user }) => {
                 </button>
                 {isUserMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2">
-                    <p className="px-4 py-2 text-gray-800">Nombre: {loggedInUser.first_name}</p>
+                    <p className="px-4 py-2 text-gray-800">Nombre: {loggedInUser.nombre}</p>
                     <p className="px-4 py-2 text-gray-800">Email: {loggedInUser.email}</p>
                     <button
                       onClick={handleLogout}
@@ -145,11 +156,6 @@ const Navigation = ({ onLoginClick, user }) => {
           </div>
         </div>
       </nav>
-      {showLogoutMessage && (
-        <div className="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg">
-          Sesión cerrada correctamente
-        </div>
-      )}
       <Login isOpen={isLoginOpen} onClose={closeLogin} onLogin={handleLogin} />
     </>
   );

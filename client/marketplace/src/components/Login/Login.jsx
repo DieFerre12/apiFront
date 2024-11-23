@@ -10,6 +10,7 @@ const Login = ({ isOpen, onClose, onLogin }) => {
   const [error, setError] = useState("");
   const { users, error: fetchError } = useFetchUsers();
   const navigate = useNavigate();
+  
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -53,6 +54,8 @@ const Login = ({ isOpen, onClose, onLogin }) => {
           // Refrescar la página después de iniciar sesión
           if (email === "admin@example.com") {
             navigate("/admin");
+          } else {
+            navigate("/");
           }
           window.location.reload();
         } else {

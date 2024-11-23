@@ -6,12 +6,13 @@ const useFetchUsers = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      try {
-        const token = localStorage.getItem('token'); // Obtener el token JWT del almacenamiento local
-        if (!token) {
-          throw new Error('Token no encontrado. Por favor, inicia sesión.');
-        }
+      const token = localStorage.getItem('token'); // Obtener el token JWT del almacenamiento local
+      if (!token) {
+        // No hacer nada si no hay token
+        return;
+      }
 
+      try {
         const response = await fetch('http://localhost:4002/users/all', {
           method: 'GET',
           headers: {

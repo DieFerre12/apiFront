@@ -50,12 +50,10 @@ const ProductDetail = ({ cart, setCart }) => {
     const fetchImageForModel = async (model) => {
       try {
         const encodedModel = encodeURIComponent(model);
-        const token = localStorage.getItem('token');
         const response = await fetch(`http://localhost:4002/images/search/${encodedModel}`, {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+            "Content-Type": "application/json"
           },
         });
 
@@ -71,7 +69,7 @@ const ProductDetail = ({ cart, setCart }) => {
     fetchImageForModel(model);
   }, [model]);
 
-  const addToCart = async (product) => {
+  const addToCart = async (product) => {  
     if (!selectedSize) {
       alert("Por favor, selecciona un talle antes de agregar al carrito.");
       return;
