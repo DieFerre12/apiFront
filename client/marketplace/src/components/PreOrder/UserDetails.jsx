@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { createOrder, setAddress, setInstallments } from '../Redux/slices/orderSlice';
+import { showSuccessAlert, showErrorAlert } from '../PreOrder/Alerts';
+
 
 const UserDetails = () => {
   const navigate = useNavigate();
@@ -122,7 +124,7 @@ const UserDetails = () => {
 
       if (createOrder.fulfilled.match(resultAction)) {
         // Si la orden se crea correctamente
-        alert('Orden creada exitosamente');
+        showSuccessAlert(); 
         localStorage.removeItem('cart');  // Limpiamos el carrito
         localStorage.setItem('lastOrder', JSON.stringify({
           ...resultAction.payload,
@@ -136,7 +138,7 @@ const UserDetails = () => {
         throw new Error(resultAction.payload || 'Error al crear la orden');
       }
     } catch (error) {
-      console.error('Error al crear la orden:', error);
+      showErrorAlert(); // Muestra la alerta de error
       setError(`Hubo un error al crear la orden: ${error.message}`);
     }
   };

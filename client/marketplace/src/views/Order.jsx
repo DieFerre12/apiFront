@@ -6,7 +6,6 @@ const Order = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Recuperar los datos de la orden desde localStorage
     const lastOrder = JSON.parse(localStorage.getItem('lastOrder'));
     if (lastOrder) {
       setOrder(lastOrder);

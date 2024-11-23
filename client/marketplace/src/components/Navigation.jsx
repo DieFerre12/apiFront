@@ -92,7 +92,13 @@ const Navigation = ({ onLoginClick }) => {
     });
   };
 
-  const loggedInUser = JSON.parse(localStorage.getItem("user"));
+  let loggedInUser;
+  try {
+    loggedInUser = JSON.parse(localStorage.getItem("user"));
+  } catch (error) {
+    console.error("Error parsing user data from localStorage:", error);
+    loggedInUser = null;
+  }
 
   const handleClickOutside = (event) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
