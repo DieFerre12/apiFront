@@ -43,7 +43,7 @@ const Login = ({ isOpen, onClose, onLogin }) => {
           const userData = {
             id: loggedInUser.id,
             email: loggedInUser.email,
-            nombre: loggedInUser.nombre,
+            nombre: loggedInUser.firstName,
             apellido: loggedInUser.apellido
           };
           
@@ -53,6 +53,7 @@ const Login = ({ isOpen, onClose, onLogin }) => {
 
           // Refrescar la página después de iniciar sesión
           if (email === "admin@example.com") {
+            
             navigate("/admin");
           } else {
             navigate("/");

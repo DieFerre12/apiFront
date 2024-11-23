@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Order = () => {
   const [order, setOrder] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Recuperar los datos de la orden desde localStorage
@@ -12,7 +14,7 @@ const Order = () => {
   }, []);
 
   if (!order) {
-    return <div>No se encontró la orden.</div>;
+    return <div className="text-center mt-8 text-gray-600">No se encontró la orden.</div>;
   }
 
   return (
@@ -45,6 +47,22 @@ const Order = () => {
       <div className="mt-4">
         <p><strong>Dirección de Envío:</strong> {order.address}</p>
         <p><strong>Cuotas:</strong> {order.installments}</p>
+      </div>
+
+      {/* Botones de acción */}
+      <div className="flex justify-center mt-6 space-x-4">
+        <button
+          onClick={() => navigate('/')}
+          className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200"
+        >
+          Volver al Inicio
+        </button>
+        <button
+          onClick={() => navigate('/product')}
+          className="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 transition duration-200"
+        >
+          Seguir Comprando
+        </button>
       </div>
     </div>
   );

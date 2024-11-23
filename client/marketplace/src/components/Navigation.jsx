@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import logo from "../assets/logo.png";
@@ -7,54 +7,57 @@ import NavLink from "./NavLink";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import shoppingCart from "../assets/shoppingCart.png";
 import profileUser from "../assets/profile-user.png";
+import { FaTimes } from "react-icons/fa"; // Importamos el ícono de la cruz
 
-const Navigation = ({ onLoginClick, user }) => {
+const Navigation = ({ onLoginClick }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState(null);
+  const menuRef = useRef(null); // Referencia para el menú
   const navigate = useNavigate();
 
-  const BRANDS = ["NIKE", "ADIDAS", "PUMA", "CONVESE", "VANS"]; // Lista de marcas
-  const LOWERCASE_BRANDS = BRANDS.map(brand => brand.toLowerCase()); // Lista de marcas en minúsculas
-
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      setLoggedInUser(JSON.parse(userData));
-    }
-  }, []);
+  const BRANDS = ["NIKE", "ADIDAS", "PUMA", "CONVERSE", "VANS"]; // Lista de marcas
+  const LOWERCASE_BRANDS = BRANDS.map((brand) => brand.toLowerCase()); // Lista de marcas en minúsculas
 
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       try {
-        const normalizedSearchQuery = searchQuery.trim().toLowerCase(); // Normaliza la búsqueda a minúsculas
-        const isBrandSearch = LOWERCASE_BRANDS.includes(normalizedSearchQuery); // Comprueba si está en la lista de marcas
+        const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+        const isBrandSearch = LOWERCASE_BRANDS.includes(normalizedSearchQuery);
 
         let data;
         if (isBrandSearch) {
-          const brand = normalizedSearchQuery.toUpperCase(); // Convierte a mayúsculas para la búsqueda
-          const response = await fetch(`http://localhost:4002/products/brand/${encodeURIComponent(brand)}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          });
+          const brand = normalizedSearchQuery.toUpperCase();
+          const response = await fetch(
+            `http://localhost:4002/products/brand/${encodeURIComponent(brand)}`,
+            {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            }
+          );
 
-          if (!response.ok) throw new Error(`Error al obtener productos para la marca ${brand}`);
-          
+          if (!response.ok)
+            throw new Error(`Error al obtener productos para la marca ${brand}`);
+
           data = await response.json();
           console.log(`Productos obtenidos para la marca ${brand}:`, data);
           navigate(`/products/${brand}`, { state: { products: data } });
         } else {
-          const response = await fetch(`http://localhost:4002/products/${encodeURIComponent(searchQuery)}`);
-          if (!response.ok) throw new Error('Producto no encontrado');
-          
+          const response = await fetch(
+            `http://localhost:4002/products/${encodeURIComponent(searchQuery)}`
+          );
+          if (!response.ok) throw new Error("Producto no encontrado");
+
           data = await response.json();
           navigate(`/product/${searchQuery}`);
         }
       } catch (error) {
         console.error("Error en la búsqueda:", error);
-        alert(error.message || "Producto no encontrado. Por favor, intente con otro modelo o marca.");
+        alert(
+          error.message ||
+            "Producto no encontrado. Por favor, intente con otro modelo o marca."
+        );
       }
     }
   };
@@ -69,36 +72,40 @@ const Navigation = ({ onLoginClick, user }) => {
 
   const closeLogin = () => {
     setIsLoginOpen(false);
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      setLoggedInUser(JSON.parse(userData));
-    }
-  };
-
-  const handleLogin = (userData) => {
-    setLoggedInUser(userData);
   };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    setLoggedInUser(null);
-    setIsUserMenuOpen(false);
     Swal.fire({
-      position: 'top-end',
-      icon: 'success',
-      title: 'Sesión cerrada correctamente',
+      position: "top-end",
+      icon: "success",
+      title: "Sesión cerrada correctamente",
       showConfirmButton: false,
       timer: 3000,
       toast: true,
       customClass: {
-        popup: 'swal2-sm'
-      }
+        popup: "swal2-sm",
+      },
     }).then(() => {
       navigate("/");
-      // Refrescar la página después de cerrar sesión
       window.location.reload();
     });
   };
+
+  const loggedInUser = JSON.parse(localStorage.getItem("user"));
+
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setIsUserMenuOpen(false); // Cierra el menú si haces clic fuera
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside); // Escucha clics en el documento
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside); // Limpia el evento
+    };
+  }, []);
 
   return (
     <>
@@ -131,20 +138,48 @@ const Navigation = ({ onLoginClick, user }) => {
               <img src={shoppingCart} alt="Carrito" className="h-8 w-8" />
             </NavLink>
             {loggedInUser ? (
-              <div className="relative">
-                <button onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} className="flex items-center">
+              <div ref={menuRef} className="relative">
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center"
+                >
                   <img src={profileUser} alt="User" className="h-8 w-8" />
                 </button>
                 {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2">
-                    <p className="px-4 py-2 text-gray-800">Nombre: {loggedInUser.nombre}</p>
-                    <p className="px-4 py-2 text-gray-800">Email: {loggedInUser.email}</p>
+                  <div className="absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-lg py-4 border border-gray-200">
                     <button
-                      onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                      onClick={() => setIsUserMenuOpen(false)} // Cierra el menú cuando se hace clic en la cruz
+                      className="absolute top-2 right-2 text-gray-500"
                     >
-                      Cerrar Sesión
+                      <FaTimes />
                     </button>
+                    <div className="px-4 py-2 border-b border-gray-300">
+                      <h3 className="text-lg font-semibold text-gray-800 font-lato">
+                        Perfil de Usuario
+                      </h3>
+                    </div>
+                    <div className="px-4 py-4 space-y-2">
+                      <div className="flex items-center space-x-3">
+                        <span className="text-sm font-bold text-gray-700 font-lato">Nombre:</span>
+                        <p className="text-sm text-gray-800 font-roboto-mono">
+                          {loggedInUser?.nombre}
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <span className="text-sm font-bold text-gray-700 font-lato">Email:</span>
+                        <p className="text-sm text-gray-800 font-roboto-mono">
+                          {loggedInUser?.email}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="px-4 pt-2">
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-sm font-semibold text-white bg-red-500 hover:bg-red-600 py-2 rounded-lg focus:outline-none transition duration-200"
+                      >
+                        Cerrar Sesión
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -156,7 +191,7 @@ const Navigation = ({ onLoginClick, user }) => {
           </div>
         </div>
       </nav>
-      <Login isOpen={isLoginOpen} onClose={closeLogin} onLogin={handleLogin} />
+      <Login isOpen={isLoginOpen} onClose={closeLogin} />
     </>
   );
 };
