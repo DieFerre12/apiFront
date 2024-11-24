@@ -17,6 +17,14 @@ const Register = () => {
   const navigate = useNavigate();
   const { user, error, loading } = useSelector((state) => state.auth);
 
+  useEffect(() => {
+    if (user) {
+      navigate("/product");
+      // Refrescar la página después de redirigir
+      window.location.reload();
+    }
+  }, [user, navigate]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -57,13 +65,6 @@ const Register = () => {
         setErrors({ api: err.message || "Error en el registro. Por favor, inténtalo de nuevo." });
       });
   };
-
-  useEffect(() => {
-    if (user) {
-      navigate("/product");
-    }
-    
-  }, [user, navigate]);
 
   return (
     <div className="container mx-auto p-6 bg-gray-100 rounded-lg mt-8 max-w-lg">
