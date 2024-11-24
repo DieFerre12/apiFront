@@ -19,11 +19,10 @@ const Brands = () => {
       const data = await response.json();
       console.log(`Productos obtenidos para la marca ${brand}:`, data);
 
-      
+      // Navegar a la página de productos con los datos obtenidos
       navigate(`/products/${brand}`, { state: { products: data } });
     } catch (error) {
       console.error(error.message);
-      setError(error.message);
     }
   };
 

@@ -95,6 +95,8 @@ const ProductList = () => {
         </div>
       ) : productStatus === 'failed' ? (
         <p>Error: {error}</p>
+      ) : products.length === 0 ? (
+        <p>No hay productos en la categoría seleccionada.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Object.entries(products.reduce((acc, product) => {

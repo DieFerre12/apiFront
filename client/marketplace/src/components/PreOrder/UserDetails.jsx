@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createOrder, setAddress, setInstallments } from '../Redux/slices/orderSlice';
 import { showSuccessAlert, showErrorAlert } from '../PreOrder/Alerts';
 
-
 const UserDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -39,7 +38,6 @@ const UserDetails = () => {
 
       if (storedCart) {
         setCart(storedCart);
-        
         setOriginalTotal(storedCart.reduce((acc, item) => acc + item.price * item.quantity, 0)); 
       }
     } catch (error) {
@@ -50,19 +48,44 @@ const UserDetails = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    if (name === 'cardNumber' || name === 'cardCVC') {
-      if (!/^\d*$/.test(value)) return; 
+  
+    if (name === 'cardNumber') {
+      // Eliminar todos los caracteres que no sean dígitos
+      const cleanedValue = value.replace(/\D/g, '');
+      // Limitar a 16 dígitos
+      if (cleanedValue.length > 16) return;
+      // Agregar un espacio cada 4 dígitos
+      const formattedValue = cleanedValue.replace(/(.{4})/g, '$1 ').trim();
+      setFormData({
+        ...formData,
+        [name]: formattedValue,
+      });
+      return;
     }
+  
+    if (name === 'cardCVC') {
+      if (!/^\d{0,4}$/.test(value)) return;
+    }
+  
     if (name === 'cardExpiry') {
-      if (!/^\d{0,2}(\/\d{0,2})?$/.test(value)) return; 
+      // Eliminar todos los caracteres que no sean dígitos
+      const cleanedValue = value.replace(/\D/g, '');
+      // Limitar a 4 dígitos
+      if (cleanedValue.length > 4) return;
+      // Agregar una barra después de los primeros 2 dígitos
+      const formattedValue = cleanedValue.replace(/(\d{2})(\d{0,2})/, '$1/$2');
+      setFormData({
+        ...formData,
+        [name]: formattedValue,
+      });
+      return;
     }
+  
     setFormData({
       ...formData,
       [name]: value,
     });
-
-    
+  
     if (name === 'address') {
       dispatch(setAddress(value));
     }
@@ -104,7 +127,16 @@ const UserDetails = () => {
         return;
       }
 
-     
+      const [expMonth, expYear] = formData.cardExpiry.split('/').map(Number);
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear() % 100;
+
+      if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
+        alert('La fecha de expiración de la tarjeta no puede ser una fecha pasada.');
+        return;
+      }
+
       const orderData = {
         userId: user.id,                       
         token,                                 
@@ -119,7 +151,6 @@ const UserDetails = () => {
 
       console.log('Enviando datos de la orden:', orderData);  
 
-      
       const resultAction = await dispatch(createOrder(orderData));
 
       if (createOrder.fulfilled.match(resultAction)) {
@@ -131,7 +162,6 @@ const UserDetails = () => {
           installments: formData.installments,
         }));  
 
-        
         navigate('/order');
       } else {
         throw new Error(resultAction.payload || 'Error al crear la orden');
