@@ -144,51 +144,61 @@ const Navigation = ({ onLoginClick }) => {
               <img src={shoppingCart} alt="Carrito" className="h-8 w-8" />
             </NavLink>
             {loggedInUser ? (
-              <div ref={menuRef} className="relative">
-                <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center"
-                >
-                  <img src={profileUser} alt="User" className="h-8 w-8" />
-                </button>
-                {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-lg py-4 border border-gray-200">
-                    <button
-                      onClick={() => setIsUserMenuOpen(false)} // Cierra el menú cuando se hace clic en la cruz
-                      className="absolute top-2 right-2 text-gray-500"
-                    >
-                      <FaTimes />
-                    </button>
-                    <div className="px-4 py-2 border-b border-gray-300">
-                      <h3 className="text-lg font-semibold text-gray-800 font-lato">
-                        Perfil de Usuario
-                      </h3>
-                    </div>
-                    <div className="px-4 py-4 space-y-2">
-                      <div className="flex items-center space-x-3">
-                        <span className="text-sm font-bold text-gray-700 font-lato">Nombre:</span>
-                        <p className="text-sm text-gray-800 font-roboto-mono">
-                          {loggedInUser?.nombre}
-                        </p>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <span className="text-sm font-bold text-gray-700 font-lato">Email:</span>
-                        <p className="text-sm text-gray-800 font-roboto-mono">
-                          {loggedInUser?.email}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="px-4 pt-2">
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-sm font-semibold text-white bg-red-500 hover:bg-red-600 py-2 rounded-lg focus:outline-none transition duration-200"
-                      >
-                        Cerrar Sesión
-                      </button>
-                    </div>
-                  </div>
+              <>
+                {loggedInUser.email === "admin@example.com" && (
+                  <button
+                    onClick={() => navigate("/admin")}
+                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-transform duration-300 transform hover:scale-105"
+                  >
+                    Admin
+                  </button>
                 )}
-              </div>
+                <div ref={menuRef} className="relative">
+                  <button
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className="flex items-center"
+                  >
+                    <img src={profileUser} alt="User" className="h-8 w-8" />
+                  </button>
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-lg py-4 border border-gray-200">
+                      <button
+                        onClick={() => setIsUserMenuOpen(false)} // Cierra el menú cuando se hace clic en la cruz
+                        className="absolute top-2 right-2 text-gray-500"
+                      >
+                        <FaTimes />
+                      </button>
+                      <div className="px-4 py-2 border-b border-gray-300">
+                        <h3 className="text-lg font-semibold text-gray-800 font-lato">
+                          Perfil de Usuario
+                        </h3>
+                      </div>
+                      <div className="px-4 py-4 space-y-2">
+                        <div className="flex items-center space-x-3">
+                          <span className="text-sm font-bold text-gray-700 font-lato">Nombre:</span>
+                          <p className="text-sm text-gray-800 font-roboto-mono">
+                            {loggedInUser?.nombre}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <span className="text-sm font-bold text-gray-700 font-lato">Email:</span>
+                          <p className="text-sm text-gray-800 font-roboto-mono">
+                            {loggedInUser?.email}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="px-4 pt-2">
+                        <button
+                          onClick={handleLogout}
+                          className="w-full text-sm font-semibold text-white bg-red-500 hover:bg-red-600 py-2 rounded-lg focus:outline-none transition duration-200"
+                        >
+                          Cerrar Sesión
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
             ) : (
               <button onClick={handleLoginClick} className="flex items-center">
                 <img src={profileUser} alt="Login" className="h-8 w-8" />
