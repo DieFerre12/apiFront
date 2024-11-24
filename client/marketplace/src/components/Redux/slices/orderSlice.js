@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-// Crear Orden
+
 export const createOrder = createAsyncThunk('order/createOrder', async (orderData, { rejectWithValue }) => {
   const { userId, token, paymentMethod, orderDate, discountedTotal, originalTotal, address, installments } = orderData;
   const discount = calculateDiscount(paymentMethod);
@@ -16,7 +16,7 @@ export const createOrder = createAsyncThunk('order/createOrder', async (orderDat
     installments: installments,
   };
 
-  console.log('Payload de la orden:', orderPayload); // Agregar detalles de depuración
+  console.log('Payload de la orden:', orderPayload); 
 
   try {
     const response = await fetch(`http://localhost:4002/order/create`, {
@@ -30,13 +30,13 @@ export const createOrder = createAsyncThunk('order/createOrder', async (orderDat
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Error al crear la orden:', errorText); // Agregar detalles de depuración
+      console.error('Error al crear la orden:', errorText); 
       return rejectWithValue(`Error al crear la orden: ${errorText}`);
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error al crear la orden:', error.message); // Agregar detalles de depuración
+    console.error('Error al crear la orden:', error.message); 
     return rejectWithValue(`Error al crear la orden: ${error.message}`);
   }
 });
@@ -47,7 +47,7 @@ const calculateDiscount = (paymentMethod) => {
   } else if (paymentMethod === "Tarjeta de debito") {
     return 0.05;
   } else if (paymentMethod === "Tarjeta de credito") {
-    return -0.10; // Recargo del 10%
+    return -0.10; 
   }
   return 0;
 };

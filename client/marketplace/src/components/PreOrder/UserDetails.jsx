@@ -27,8 +27,8 @@ const UserDetails = () => {
 
   useEffect(() => {
     try {
-      const storedUser = JSON.parse(localStorage.getItem('user'));  // Intentamos cargar desde localStorage
-      const storedCart = JSON.parse(localStorage.getItem('cart'));  // Intentamos cargar el carrito
+      const storedUser = JSON.parse(localStorage.getItem('user'));  
+      const storedCart = JSON.parse(localStorage.getItem('cart'));  
 
       if (storedUser && storedUser.id) {
         setUser(storedUser);
@@ -39,8 +39,8 @@ const UserDetails = () => {
 
       if (storedCart) {
         setCart(storedCart);
-        // Aquí podrías calcular el total original si tienes los productos
-        setOriginalTotal(storedCart.reduce((acc, item) => acc + item.price * item.quantity, 0)); // Ejemplo de cálculo
+        
+        setOriginalTotal(storedCart.reduce((acc, item) => acc + item.price * item.quantity, 0)); 
       }
     } catch (error) {
       console.error('Error al acceder a localStorage:', error);
@@ -50,19 +50,19 @@ const UserDetails = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Validaciones específicas para campos de número y formato
+    
     if (name === 'cardNumber' || name === 'cardCVC') {
-      if (!/^\d*$/.test(value)) return; // Permitir solo números
+      if (!/^\d*$/.test(value)) return; 
     }
     if (name === 'cardExpiry') {
-      if (!/^\d{0,2}(\/\d{0,2})?$/.test(value)) return; // Validar formato mm/yy
+      if (!/^\d{0,2}(\/\d{0,2})?$/.test(value)) return; 
     }
     setFormData({
       ...formData,
       [name]: value,
     });
 
-    // Guardar los datos en el estado de Redux
+    
     if (name === 'address') {
       dispatch(setAddress(value));
     }
@@ -83,7 +83,7 @@ const UserDetails = () => {
     } else if (paymentMethod === 'Tarjeta de debito') {
       return 0.05;
     } else if (paymentMethod === 'Tarjeta de credito') {
-      return -0.10; // Recargo del 10%
+      return -0.10; 
     }
     return 0;
   };
@@ -104,41 +104,40 @@ const UserDetails = () => {
         return;
       }
 
-      // Recopilamos todos los datos en un solo objeto
+     
       const orderData = {
-        userId: user.id,                       // Usamos el ID del usuario recuperado
-        token,                                 // Token de autenticación
-        paymentMethod,                         // Método de pago
-        orderDate: new Date().toISOString(),   // Fecha de la orden
-        discountedTotal,                       // Total con descuento
-        originalTotal,                         // Total original
-        address: formData.address,             // Dirección del formulario
-        installments: formData.installments,   // Cantidad de cuotas
-        products: cart,                        // Productos del carrito
+        userId: user.id,                       
+        token,                                 
+        paymentMethod,                         
+        orderDate: new Date().toISOString(),   
+        discountedTotal,                       
+        originalTotal,                         
+        address: formData.address,             
+        installments: formData.installments,   
+        products: cart,                        
       };
 
-      console.log('Enviando datos de la orden:', orderData);  // Verifica los datos
+      console.log('Enviando datos de la orden:', orderData);  
 
-      // Llamamos a la acción createOrder pasándole el objeto con todos los datos
+      
       const resultAction = await dispatch(createOrder(orderData));
 
       if (createOrder.fulfilled.match(resultAction)) {
-        // Si la orden se crea correctamente
         showSuccessAlert(); 
-        localStorage.removeItem('cart');  // Limpiamos el carrito
+        localStorage.removeItem('cart');  
         localStorage.setItem('lastOrder', JSON.stringify({
           ...resultAction.payload,
           address: formData.address,
           installments: formData.installments,
-        }));  // Guardamos la orden creada
+        }));  
 
-        // Redirigimos al usuario a la página de orden
+        
         navigate('/order');
       } else {
         throw new Error(resultAction.payload || 'Error al crear la orden');
       }
     } catch (error) {
-      showErrorAlert(); // Muestra la alerta de error
+      showErrorAlert(); 
       setError(`Hubo un error al crear la orden: ${error.message}`);
     }
   };

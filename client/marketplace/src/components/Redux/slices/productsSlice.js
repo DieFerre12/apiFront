@@ -1,4 +1,3 @@
-// src/slices/productsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async ({ categoryType = "", brand = "" }) => {
@@ -64,6 +63,6 @@ const productsSlice = createSlice({
   },
 });
 
-// Exportar acciones y reducer
+
 export const { setSelectedSize } = productsSlice.actions;
 export default productsSlice.reducer;

@@ -3,7 +3,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import ProductGallery from '../components/Home/Products';
-import DesignerImage from '../assets/Designer.jpeg'; // Importa la imagen
+import DesignerImage from '../assets/Designer.jpeg'; 
 import zapabanner1 from '../assets/zapabanner1.jpeg';
 import zapas2 from '../assets/zapas2.jpg';
 import Brands from '../components/Brands';
@@ -21,10 +21,10 @@ const Home = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 5000, // 5 segundos
+    autoplaySpeed: 5000, 
     arrows: true,
     centerMode: true,
-    centerPadding: '0 px', // Espacio mínimo entre las imágenes
+    centerPadding: '0 px', 
   };
 
   useEffect(() => {

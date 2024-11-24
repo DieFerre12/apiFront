@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PostCard from './PostCard';
 
-const PostList = ({ initialPosts }) => { // Cambiamos la prop a 'initialPosts'
+const PostList = ({ initialPosts }) => { 
     const [posts, setPosts] = useState([]);
 
     const URL = 'https://jsonplaceholder.typicode.com/posts';
@@ -17,7 +17,7 @@ const PostList = ({ initialPosts }) => { // Cambiamos la prop a 'initialPosts'
         <>
             <h1>Publicaciones</h1>
             <div>
-                {posts.map((post) => ( // Cambiamos a 'post' en el map
+                {posts.map((post) => ( 
                     <PostCard
                         key={post.id}
                         title={post.title}

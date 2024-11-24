@@ -3,7 +3,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import store from "./components/Redux/Store"; // Ajusta la ruta de importación
+import store from "./components/Redux/Store"; 
 import App from "./App";
 import "./index.css";
 

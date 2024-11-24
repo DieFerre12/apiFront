@@ -1,4 +1,3 @@
-// src/components/PaymentMethod.jsx
 import React from "react";
 
 const PaymentMethod = ({ name, icon }) => {

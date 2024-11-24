@@ -1,4 +1,3 @@
-// src/views/Contact.jsx
 import React from 'react';
 
 const Contact = () => {

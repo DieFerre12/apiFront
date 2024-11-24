@@ -1,15 +1,14 @@
-// src/hooks/useFetchProducts.js
 import { useState, useEffect } from "react";
 
 const useFetchProducts = (id) => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const API_URL = "http://localhost:4002/products"; // Ruta del backend
+  const API_URL = "http://localhost:4002/products"; 
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const token = localStorage.getItem('token'); // Obtén el token del almacenamiento local
+      const token = localStorage.getItem('token'); 
 
       if (!token) {
         setError("No se encontró el token de autorización.");
@@ -21,7 +20,7 @@ const useFetchProducts = (id) => {
         const response = await fetch(API_URL, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${token}`, // Envía el token en la cabecera Authorization
+            'Authorization': `Bearer ${token}`, 
             'Content-Type': 'application/json',
           },
         });
@@ -30,7 +29,7 @@ const useFetchProducts = (id) => {
 
         const data = await response.json();
 
-        // Si se pasa un ID, buscar el producto específico
+        
         if (id) {
           const foundProduct = data.find((p) => p.id === parseInt(id));
           if (foundProduct) {
@@ -39,7 +38,7 @@ const useFetchProducts = (id) => {
             setError("Producto no encontrado");
           }
         } else {
-          setProduct(data); // Setea todos los productos si no hay ID
+          setProduct(data); 
         }
       } catch (error) {
         setError(error.message);

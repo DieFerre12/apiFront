@@ -8,7 +8,7 @@ const ProductGallery = () => {
   const fetchProducts = async () => {
     try {
       const url = "http://localhost:4002/products";
-      console.log(`Fetching products from URL: ${url}`); // Debugging line
+      console.log(`Fetching products from URL: ${url}`); 
 
       const response = await fetch(url, {
         method: "GET",
@@ -17,12 +17,12 @@ const ProductGallery = () => {
       if (!response.ok) throw new Error("Error al obtener productos");
 
       const data = await response.json();
-      console.log("Respuesta completa de productos:", data); // Debugging line
+      console.log("Respuesta completa de productos:", data); 
 
       const products = Array.isArray(data) ? data : data.content;
       if (!products) throw new Error("La respuesta de la API no contiene productos");
 
-      console.log("Productos obtenidos:", products); // Debugging line
+      console.log("Productos obtenidos:", products); 
 
       const grouped = products.reduce((acc, product) => {
         acc[product.model] = acc[product.model] || [];
@@ -30,7 +30,7 @@ const ProductGallery = () => {
         return acc;
       }, {});
 
-      console.log("Productos agrupados:", grouped); // Debugging line
+      console.log("Productos agrupados:", grouped); 
 
       setGroupedProducts(grouped);
 
