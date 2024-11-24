@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { registerUser } from "../components/Redux/slices/registerSlice";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -11,21 +13,20 @@ const Register = () => {
     role: "USER",
   });
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user, error, loading } = useSelector((state) => state.auth);
 
-  // Manejar cambios en los campos de entrada
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Validación de la contraseña
   const validatePassword = (password) => {
     return password.length >= 6;
   };
 
-  // Manejar el envío del formulario
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = {};
 
@@ -43,45 +44,26 @@ const Register = () => {
       return;
     }
 
-    const API_URL = "http://localhost:4002/api/v1/auth/register";
-
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstname: formData.firstName,
-          lastname: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-          role: "USER",
-        }),
+    dispatch(registerUser({
+      firstname: formData.firstName,
+      lastname: formData.lastName,
+      email: formData.email,
+      password: formData.password,
+      role: "USER",
+    }))
+      .unwrap()
+      .catch((err) => {
+        console.error("Error en el registro:", err);
+        setErrors({ api: err.message || "Error en el registro. Por favor, inténtalo de nuevo." });
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => {
-          throw new Error("Error en el registro");
-        });
-        throw new Error(errorData.message || "Error en el registro");
-      }
-
-      const data = await response.json();
-      console.log("Registro exitoso:", data);
-
-      // Guardar token JWT en el almacenamiento local
-      localStorage.setItem("token", data.token);
-
-      // Redirigir a la página de productos
-      navigate("/product");
-    } catch (error) {
-      console.error("Error en el registro:", error);
-      setErrors({
-        api: error.message || "Error en el registro. Por favor, inténtalo de nuevo.",
-      });
-    }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/product");
+    }
+    
+  }, [user, navigate]);
 
   return (
     <div className="container mx-auto p-6 bg-gray-100 rounded-lg mt-8 max-w-lg">
@@ -181,6 +163,7 @@ const Register = () => {
           <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
+            disabled={loading}
           >
             Registrarse
           </button>
