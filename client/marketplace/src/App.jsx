@@ -32,11 +32,10 @@ const App = () => {
   const handleLogin = (userData) => {
     setUser(userData);
     setIsLoginOpen(false);
-    // Redirigir a la página de administración si el usuario es admin
     if (userData.role === "ADMIN") {
       navigate("/admin");
     } else {
-      navigate("/"); // Redirigir a la página principal o a otra página si no es admin
+      navigate("/"); 
     }
   };
 

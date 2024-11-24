@@ -8,9 +8,9 @@ const EliminarProducto = ({ isOpen, onClose }) => {
 
   const handleDelete = async (e) => {
     e.preventDefault();
-    const API_URL = `http://localhost:4002/products/${model}`; // URL para eliminar el producto
+    const API_URL = `http://localhost:4002/products/${model}`; 
 
-    console.log("Enviando solicitud para eliminar producto:", { model }); // Línea de depuración
+    console.log("Enviando solicitud para eliminar producto:", { model }); 
 
     try {
       const response = await fetch(API_URL, {
@@ -20,7 +20,7 @@ const EliminarProducto = ({ isOpen, onClose }) => {
         },
       });
 
-      console.log("Respuesta del servidor:", response); // Línea de depuración
+      console.log("Respuesta del servidor:", response); 
 
       if (!response.ok) {
         const errorData = await response.text();
@@ -35,12 +35,12 @@ const EliminarProducto = ({ isOpen, onClose }) => {
         timer: 1500
       });
       setSuccessMessage("Producto eliminado exitosamente");
-      setError(""); // Limpiar errores
-      onClose(); // Cierra el modal o ventana al terminar el proceso
+      setError(""); 
+      onClose(); 
     } catch (err) {
       console.error("Error durante la eliminación del producto:", err);
       setError(err.message);
-      setSuccessMessage(""); // Limpiar mensajes de éxito
+      setSuccessMessage(""); 
     }
   };
 

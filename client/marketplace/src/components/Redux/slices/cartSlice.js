@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-// Fetch Cart
+
 export const fetchCart = createAsyncThunk('cart/fetchCart', async (userId, { rejectWithValue }) => {
   try {
     const token = localStorage.getItem('token');
@@ -28,7 +28,7 @@ export const fetchCart = createAsyncThunk('cart/fetchCart', async (userId, { rej
   }
 });
 
-// Add to Cart
+
 export const addToCart = createAsyncThunk('cart/addToCart', async (productWithSize, { rejectWithValue }) => {
   try {
     const token = localStorage.getItem('token');
@@ -53,7 +53,7 @@ export const addToCart = createAsyncThunk('cart/addToCart', async (productWithSi
   }
 });
 
-// Remove from Cart
+
 export const removeFromCart = createAsyncThunk('cart/removeFromCart', async ({ userId, model, size }, { rejectWithValue }) => {
   try {
     const token = localStorage.getItem('token');

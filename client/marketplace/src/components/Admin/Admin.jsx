@@ -2,20 +2,20 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
 const Admin = ({ isOpen, onClose }) => {
-  const [model, setModel] = useState(""); // Estado para el campo 'model'
+  const [model, setModel] = useState(""); 
   const [precio, setPrecio] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [error, setError] = useState("");
-  const [categoria, setCategoria] = useState(""); // Para la categoría seleccionada
-  const [categories, setCategories] = useState([]); // Para almacenar las categorías
+  const [categoria, setCategoria] = useState(""); 
+  const [categories, setCategories] = useState([]); 
   const [sizeStockMap, setSizeStockMap] = useState({});
   const [marca, setMarca] = useState("");
   const [genero, setGenero] = useState("");
   const [selectedSizes, setSelectedSizes] = useState([]);
-  const [image, setImage] = useState(null); // Estado para la imagen
-  const [successMessage, setSuccessMessage] = useState(""); // Estado para el mensaje de éxito
+  const [image, setImage] = useState(null); 
+  const [successMessage, setSuccessMessage] = useState(""); 
 
-  // Fetch categories cuando el componente se monta
+
   const fetchCategories = async () => {
     try {
       const response = await fetch("http://localhost:4002/categories", {
@@ -25,7 +25,7 @@ const Admin = ({ isOpen, onClose }) => {
       if (!response.ok) throw new Error("Error al obtener categorías");
 
       const data = await response.json();
-      setCategories(data.content); // Asigna las categorías obtenidas
+      setCategories(data.content); 
     } catch (error) {
       console.error(error.message);
       setCategories([]);
@@ -33,7 +33,7 @@ const Admin = ({ isOpen, onClose }) => {
   };
 
   useEffect(() => {
-    fetchCategories(); // Llama a la función para obtener categorías
+    fetchCategories(); 
   }, []);
 
   const handleSizeChange = (size) => {
@@ -53,23 +53,23 @@ const Admin = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const API_URL = "http://localhost:4002/products/new"; // Reemplaza con tu URL de API
+    const API_URL = "http://localhost:4002/products/new"; 
     const token = localStorage.getItem("token");
 
     const productData = { 
       description: descripcion,
-      model: model, // Asegúrate de que el campo model se envíe correctamente
+      model: model, 
       genre: genero,
       brand: marca,
       sizeStockMap,
       price: parseFloat(precio),
-      categoryType: categoria, // Usa la categoría seleccionada
+      categoryType: categoria, 
     };
 
-    console.log("Enviando producto:", productData); // Línea de depuración
+    console.log("Enviando producto:", productData); 
 
     try {
-      // Subir la imagen
+      
       if (image) {
         const formData = new FormData();
         formData.append("file", image);
@@ -90,7 +90,7 @@ const Admin = ({ isOpen, onClose }) => {
         console.log("Imagen subida exitosamente");
       }
 
-      // Crear el producto
+      
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
@@ -113,7 +113,7 @@ const Admin = ({ isOpen, onClose }) => {
         showConfirmButton: false,
         timer: 1500
       });
-      onClose(); // Cierra el modal o ventana al terminar el proceso
+      onClose(); 
     } catch (err) {
       console.error("Error durante la creación del producto:", err);
       setError(err.message);

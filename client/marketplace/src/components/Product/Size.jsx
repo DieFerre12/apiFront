@@ -1,8 +1,6 @@
-// src/components/SizeSelector.jsx
 import React from "react";
 
 const SizeSelector = ({ sizesWithStock, selectedSize, setSelectedSize }) => {
-  // Manejar la selección de un talle
   const handleSizeChange = (event) => {
     setSelectedSize(event.target.value);
   };

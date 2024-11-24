@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-// Crear Orden
+
 export const createOrder = createAsyncThunk('order/createOrder', async (orderData, { rejectWithValue }) => {
   const { userId, token, paymentMethod, orderDate, discountedTotal, originalTotal, address } = orderData;
   const discount = calculateDiscount(paymentMethod);
@@ -42,7 +42,7 @@ const calculateDiscount = (paymentMethod) => {
   } else if (paymentMethod === "Tarjeta de debito") {
     return 0.05;
   } else if (paymentMethod === "Tarjeta de credito") {
-    return -0.10; // Recargo del 10%
+    return -0.10; 
   }
   return 0;
 };

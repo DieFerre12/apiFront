@@ -20,7 +20,6 @@ const Register = () => {
   useEffect(() => {
     if (user) {
       navigate("/product");
-      // Refrescar la página después de redirigir
       window.location.reload();
     }
   }, [user, navigate]);

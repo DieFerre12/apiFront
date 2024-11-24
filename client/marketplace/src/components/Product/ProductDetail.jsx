@@ -3,8 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FaCcVisa, FaCcMastercard } from "react-icons/fa";
 import { SiMercadopago } from "react-icons/si";
 import { ImCross } from "react-icons/im";
-import { motion } from "framer-motion"; // Animaciones
-import { MdCheckCircle } from "react-icons/md"; // Icono para el pop-up
+import { motion } from "framer-motion"; 
+import { MdCheckCircle } from "react-icons/md"; 
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedSize } from '../Redux/slices/productsSlice';
 import { addToCart } from '../Redux/slices/cartSlice';
@@ -19,7 +19,7 @@ const ProductDetail = ({ cart, setCart }) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
   const [productImage, setProductImage] = useState("");
-  const [showPopup, setShowPopup] = useState(false); // Estado para el pop-up
+  const [showPopup, setShowPopup] = useState(false); 
   const dispatch = useDispatch();
   
   useEffect(() => {
@@ -102,9 +102,9 @@ const ProductDetail = ({ cart, setCart }) => {
 
       localStorage.setItem('cart', JSON.stringify([...cart, data]));
       
-      // Mostrar el pop-up
+      
       setShowPopup(true);
-      setTimeout(() => setShowPopup(false), 2000); // Ocultar después de 2 segundos
+      setTimeout(() => setShowPopup(false), 2000); 
 
       navigate("/cart");
     } catch (error) {

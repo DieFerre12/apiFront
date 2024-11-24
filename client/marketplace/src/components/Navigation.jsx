@@ -7,17 +7,17 @@ import NavLink from "./NavLink";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import shoppingCart from "../assets/shoppingCart.png";
 import profileUser from "../assets/profile-user.png";
-import { FaTimes } from "react-icons/fa"; // Importamos el ícono de la cruz
+import { FaTimes } from "react-icons/fa"; 
 
 const Navigation = ({ onLoginClick }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const menuRef = useRef(null); // Referencia para el menú
+  const menuRef = useRef(null); 
   const navigate = useNavigate();
 
-  const BRANDS = ["NIKE", "ADIDAS", "PUMA", "CONVERSE", "VANS"]; // Lista de marcas
-  const LOWERCASE_BRANDS = BRANDS.map((brand) => brand.toLowerCase()); // Lista de marcas en minúsculas
+  const BRANDS = ["NIKE", "ADIDAS", "PUMA", "CONVERSE", "VANS"]; 
+  const LOWERCASE_BRANDS = BRANDS.map((brand) => brand.toLowerCase()); 
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -102,14 +102,14 @@ const Navigation = ({ onLoginClick }) => {
 
   const handleClickOutside = (event) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
-      setIsUserMenuOpen(false); // Cierra el menú si haces clic fuera
+      setIsUserMenuOpen(false); 
     }
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside); // Escucha clics en el documento
+    document.addEventListener("mousedown", handleClickOutside); 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside); // Limpia el evento
+      document.removeEventListener("mousedown", handleClickOutside); 
     };
   }, []);
 

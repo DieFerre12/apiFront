@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 
 const ActualizarPrecio = ({ isOpen, onClose }) => {
-  const [model, setModel] = useState(""); // Estado para el campo 'model'
+  const [model, setModel] = useState(""); 
   const [newPrice, setNewPrice] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleUpdatePrice = async (e) => {
     e.preventDefault();
-    const API_URL = "http://localhost:4002/products/updateProductPrice"; // URL correcta para actualizar el precio
+    const API_URL = "http://localhost:4002/products/updateProductPrice"; 
 
     try {
       const response = await fetch(API_URL, {
@@ -37,12 +37,12 @@ const ActualizarPrecio = ({ isOpen, onClose }) => {
         timer: 1500
       });
       setSuccessMessage("Precio actualizado exitosamente");
-      setError(""); // Limpiar errores
-      onClose(); // Cierra el modal o ventana al terminar el proceso
+      setError(""); 
+      onClose(); 
     } catch (err) {
       console.error("Error durante la actualización del precio:", err);
       setError(err.message);
-      setSuccessMessage(""); // Limpiar mensajes de éxito
+      setSuccessMessage(""); 
     }
   };
 

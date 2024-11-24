@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 
-// Alerta de éxito (Orden creada exitosamente)
+
 const showSuccessAlert = () => {
   Swal.fire({
     icon: 'success',
@@ -11,11 +11,11 @@ const showSuccessAlert = () => {
     customClass: {
       popup: 'swal2-sm',
     },
-    timer: 5000, // Se cierra automáticamente después de 5 segundos
+    timer: 5000, 
   });
 };
 
-// Alerta de error (Error al crear orden)
+
 const showErrorAlert = () => {
   Swal.fire({
     icon: 'error',

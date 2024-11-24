@@ -51,7 +51,7 @@ const Login = ({ isOpen, onClose, onLogin }) => {
           onClose();
           onLogin(userData);
 
-          // Refrescar la página después de iniciar sesión
+          
           if (email === "admin@example.com") {
             
             navigate("/");

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 
 const ActualizarStock = ({ isOpen, onClose }) => {
-  const [model, setModel] = useState(""); // Estado para el campo 'model'
+  const [model, setModel] = useState(""); 
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [sizeStockMap, setSizeStockMap] = useState({}); // Para almacenar el stock por talla
-  const [selectedSizes, setSelectedSizes] = useState([]); // Para almacenar las tallas seleccionadas
+  const [sizeStockMap, setSizeStockMap] = useState({}); 
+  const [selectedSizes, setSelectedSizes] = useState([]); 
 
   const handleSizeChange = (size) => {
     setSelectedSizes((prevSizes) =>
@@ -25,7 +25,7 @@ const ActualizarStock = ({ isOpen, onClose }) => {
 
   const handleUpdateStock = async (e) => {
     e.preventDefault();
-    const API_URL = "http://localhost:4002/products/updateProductSize"; // URL correcta para actualizar el stock
+    const API_URL = "http://localhost:4002/products/updateProductSize"; 
 
     try {
       const response = await fetch(API_URL, {
@@ -53,12 +53,12 @@ const ActualizarStock = ({ isOpen, onClose }) => {
         timer: 1500
       });
       setSuccessMessage("Stock actualizado exitosamente");
-      setError(""); // Limpiar errores
-      onClose(); // Cierra el modal o ventana al terminar el proceso
+      setError(""); 
+      onClose(); 
     } catch (err) {
       console.error("Error durante la actualización del stock:", err);
       setError(err.message);
-      setSuccessMessage(""); // Limpiar mensajes de éxito
+      setSuccessMessage(""); 
     }
   };
 

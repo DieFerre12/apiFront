@@ -6,9 +6,9 @@ const useFetchUsers = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const token = localStorage.getItem('token'); // Obtener el token JWT del almacenamiento local
+      const token = localStorage.getItem('token'); 
       if (!token) {
-        // No hacer nada si no hay token
+        
         return;
       }
 
@@ -17,7 +17,7 @@ const useFetchUsers = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Enviar el token JWT en el encabezado de autorización
+            'Authorization': `Bearer ${token}` 
           }
         });
 
