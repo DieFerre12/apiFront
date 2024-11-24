@@ -36,14 +36,11 @@ const ActualizarPrecio = ({ isOpen, onClose }) => {
         showConfirmButton: false,
         timer: 1500
       });
-      setSuccessMessage("Precio actualizado exitosamente");
-      setError(""); // Limpiar errores
-      onClose(); // Cierra el modal o ventana al terminar el proceso
+      setError(""); 
+      onClose(); 
     } catch (err) {
       console.error("Error durante la actualización del precio:", err);
-      setError(err.message);
-      setSuccessMessage(""); // Limpiar mensajes de éxito
-    }
+      setError(err.message);    }
   };
 
   if (!isOpen) return null;

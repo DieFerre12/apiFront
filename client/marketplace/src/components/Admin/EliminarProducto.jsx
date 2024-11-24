@@ -30,11 +30,10 @@ const EliminarProducto = ({ isOpen, onClose }) => {
       console.log("Producto eliminado exitosamente");
       Swal.fire({
         icon: 'success',
-        title: 'Producto eliminado',
+        title: 'Producto eliminado exitosamente',
         showConfirmButton: false,
         timer: 1500
       });
-      setSuccessMessage("Producto eliminado exitosamente");
       setError(""); // Limpiar errores
       onClose(); // Cierra el modal o ventana al terminar el proceso
     } catch (err) {
