@@ -115,7 +115,7 @@ const Login = ({ isOpen, onClose, onLogin }) => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 px-3 py-2 text-gray-600"
+              className="absolute inset-y-8 right-0 px-3 py-2 text-gray-600"
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
