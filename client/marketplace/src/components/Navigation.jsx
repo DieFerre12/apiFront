@@ -62,21 +62,7 @@ const Navigation = ({ onLoginClick }) => {
   };
 
   const handleLoginClick = () => {
-    Swal.fire({
-      title: 'Iniciar sesión',
-      text: 'Por favor, inicia sesión para continuar.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Iniciar sesión',
-      cancelButtonText: 'Cancelar',
-      customClass: {
-        popup: 'swal2-sm',
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setIsLoginOpen(true);
-      }
-    });
+    setIsLoginOpen(true);
   };
 
   const closeLogin = () => {
@@ -125,7 +111,21 @@ const Navigation = ({ onLoginClick }) => {
     if (loggedInUser) {
       navigate("/cart");
     } else {
-      handleLoginClick();
+      Swal.fire({
+        title: 'Iniciar sesión',
+        text: 'Por favor, inicia sesión para continuar.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Iniciar sesión',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+          popup: 'swal2-sm',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setIsLoginOpen(true);
+        }
+      });
     }
   };
 
