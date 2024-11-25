@@ -89,9 +89,6 @@ const Cart = () => {
     );
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-md mt-8 max-w-5xl animate-fade-in">

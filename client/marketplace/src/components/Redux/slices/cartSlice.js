@@ -14,7 +14,7 @@ export const fetchCart = createAsyncThunk('cart/fetchCart', async (userId, { rej
 
     if (!response.ok) {
       const errorText = await response.text();
-      return rejectWithValue(`Error al obtener el carrito: ${errorText}`);
+      return rejectWithValue(`Carrito vacio:`);
     }
 
     const text = await response.text();
