@@ -5,10 +5,8 @@ import { SiMercadopago } from "react-icons/si";
 import { ImCross } from "react-icons/im";
 import { motion } from "framer-motion"; 
 import { MdCheckCircle } from "react-icons/md"; 
-import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedSize } from '../Redux/slices/productsSlice';
-import { addToCart } from '../Redux/slices/cartSlice';
 import ClipLoader from "react-spinners/ClipLoader";
+import Swal from 'sweetalert2';
 
 const ProductDetail = ({ cart, setCart }) => {
   const { model } = useParams();
@@ -20,7 +18,6 @@ const ProductDetail = ({ cart, setCart }) => {
   const [selectedImage, setSelectedImage] = useState("");
   const [productImage, setProductImage] = useState("");
   const [showPopup, setShowPopup] = useState(false); 
-  const dispatch = useDispatch();
   
   useEffect(() => {
     const fetchProducts = async () => {
@@ -71,15 +68,41 @@ const ProductDetail = ({ cart, setCart }) => {
 
   const addToCart = async (product) => {  
     if (!selectedSize) {
-      alert("Por favor, selecciona un talle antes de agregar al carrito.");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Talle no seleccionado',
+        text: 'Por favor, selecciona un talle antes de agregar al carrito.',
+        confirmButtonText: 'Entendido',
+        customClass: {
+          popup: 'swal-popup',
+          title: 'swal-title',
+          confirmButton: 'swal-button'
+        }
+      });
       return;
     }
 
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
     if (!token || !user?.id) {
-      alert('Por favor, inicia sesión.');
-      navigate('/login');
+      Swal.fire({
+        icon: 'info',
+        title: 'No has iniciado sesión',
+        text: 'Por favor, inicia sesión para continuar.',
+        showCancelButton: true,
+        confirmButtonText: 'Iniciar sesión',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+          popup: 'swal-popup',
+          title: 'swal-title',
+          confirmButton: 'swal-button',
+          cancelButton: 'swal-button-cancel'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/login');
+        }
+      });
       return;
     }
 
@@ -102,14 +125,23 @@ const ProductDetail = ({ cart, setCart }) => {
 
       localStorage.setItem('cart', JSON.stringify([...cart, data]));
       
-      
       setShowPopup(true);
       setTimeout(() => setShowPopup(false), 2000); 
 
       navigate("/cart");
     } catch (error) {
       console.error('Error:', error);
-      alert(`Error al agregar al carrito: ${error.message}`);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: `Error al agregar al carrito: ${error.message}`,
+        confirmButtonText: 'Entendido',
+        customClass: {
+          popup: 'swal-popup',
+          title: 'swal-title',
+          confirmButton: 'swal-button'
+        }
+      });
     }
   };
 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { createOrder, setAddress, setInstallments } from '../Redux/slices/orderSlice';
 import { showSuccessAlert, showErrorAlert } from '../PreOrder/Alerts';
+import Swal from 'sweetalert2';
 
 const UserDetails = () => {
   const navigate = useNavigate();
@@ -32,8 +33,14 @@ const UserDetails = () => {
       if (storedUser && storedUser.id) {
         setUser(storedUser);
       } else {
-        alert('No se encontró el ID del usuario. Por favor, inicia sesión.');
-        navigate('/login');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Usuario no encontrado',
+          text: 'No se encontró el ID del usuario. Por favor, inicia sesión.',
+          confirmButtonText: 'Iniciar sesión'
+        }).then(() => {
+          navigate('/login');
+        });
       }
 
       if (storedCart) {
@@ -50,11 +57,8 @@ const UserDetails = () => {
     const { name, value } = e.target;
   
     if (name === 'cardNumber') {
-      // Eliminar todos los caracteres que no sean dígitos
       const cleanedValue = value.replace(/\D/g, '');
-      // Limitar a 16 dígitos
       if (cleanedValue.length > 16) return;
-      // Agregar un espacio cada 4 dígitos
       const formattedValue = cleanedValue.replace(/(.{4})/g, '$1 ').trim();
       setFormData({
         ...formData,
@@ -68,11 +72,8 @@ const UserDetails = () => {
     }
   
     if (name === 'cardExpiry') {
-      // Eliminar todos los caracteres que no sean dígitos
       const cleanedValue = value.replace(/\D/g, '');
-      // Limitar a 4 dígitos
       if (cleanedValue.length > 4) return;
-      // Agregar una barra después de los primeros 2 dígitos
       const formattedValue = cleanedValue.replace(/(\d{2})(\d{0,2})/, '$1/$2');
       setFormData({
         ...formData,
@@ -116,14 +117,25 @@ const UserDetails = () => {
 
     try {
       if (!user || !user.id) {
-        alert('No se encontró el ID del usuario.');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Usuario no encontrado',
+          text: 'No se encontró el ID del usuario.',
+          confirmButtonText: 'Entendido'
+        });
         return;
       }
 
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('Token de autenticación no encontrado. Por favor, inicia sesión.');
-        navigate('/login');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Token no encontrado',
+          text: 'Token de autenticación no encontrado. Por favor, inicia sesión.',
+          confirmButtonText: 'Iniciar sesión'
+        }).then(() => {
+          navigate('/login');
+        });
         return;
       }
 
@@ -133,7 +145,12 @@ const UserDetails = () => {
       const currentYear = currentDate.getFullYear() % 100;
 
       if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
-        alert('La fecha de expiración de la tarjeta no puede ser una fecha pasada.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Fecha de expiración inválida',
+          text: 'La fecha de expiración de la tarjeta no puede ser una fecha pasada.',
+          confirmButtonText: 'Entendido'
+        });
         return;
       }
 

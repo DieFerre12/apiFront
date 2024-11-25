@@ -41,7 +41,6 @@ const Navigation = ({ onLoginClick }) => {
             throw new Error(`Error al obtener productos para la marca ${brand}`);
 
           data = await response.json();
-          console.log(`Productos obtenidos para la marca ${brand}:`, data);
           navigate(`/products/${brand}`, { state: { products: data } });
         } else {
           const response = await fetch(
@@ -63,11 +62,21 @@ const Navigation = ({ onLoginClick }) => {
   };
 
   const handleLoginClick = () => {
-    if (onLoginClick) {
-      onLoginClick();
-    } else {
-      setIsLoginOpen(true);
-    }
+    Swal.fire({
+      title: 'Iniciar sesión',
+      text: 'Por favor, inicia sesión para continuar.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Iniciar sesión',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        popup: 'swal2-sm',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setIsLoginOpen(true);
+      }
+    });
   };
 
   const closeLogin = () => {
@@ -96,7 +105,6 @@ const Navigation = ({ onLoginClick }) => {
   try {
     loggedInUser = JSON.parse(localStorage.getItem("user"));
   } catch (error) {
-    console.error("Error parsing user data from localStorage:", error);
     loggedInUser = null;
   }
 
@@ -112,6 +120,14 @@ const Navigation = ({ onLoginClick }) => {
       document.removeEventListener("mousedown", handleClickOutside); 
     };
   }, []);
+
+  const handleCartClick = () => {
+    if (loggedInUser) {
+      navigate("/cart");
+    } else {
+      handleLoginClick();
+    }
+  };
 
   return (
     <>
@@ -140,9 +156,9 @@ const Navigation = ({ onLoginClick }) => {
             </form>
           </div>
           <div className="flex items-center space-x-8">
-            <NavLink to="/cart" className="flex items-center">
+            <button onClick={handleCartClick} className="flex items-center">
               <img src={shoppingCart} alt="Carrito" className="h-8 w-8" />
-            </NavLink>
+            </button>
             {loggedInUser ? (
               <>
                 {loggedInUser.email === "admin@example.com" && (
