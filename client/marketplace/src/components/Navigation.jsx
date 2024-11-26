@@ -72,18 +72,19 @@ const Navigation = ({ onLoginClick }) => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     Swal.fire({
-      position: "top-end",
+      position: "center",
       icon: "success",
       title: "Sesión cerrada correctamente",
       showConfirmButton: false,
-      timer: 3000,
-      toast: true,
+      timer: 1000, // Reduce the timer to 1 second
       customClass: {
         popup: "swal2-sm",
       },
     }).then(() => {
-      navigate("/");
-      window.location.reload();
+      setTimeout(() => {
+        navigate("/");
+        window.location.reload();
+      }, 1000); // Reduce the delay to 1 second
     });
   };
 
@@ -127,6 +128,23 @@ const Navigation = ({ onLoginClick }) => {
         }
       });
     }
+  };
+
+  const handleLoginSuccess = (userData) => {
+    Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Inicio de sesión exitoso",
+      showConfirmButton: false,
+      timer: 1000, // Reduce the timer to 1 second
+      customClass: {
+        popup: "swal2-sm",
+      },
+    }).then(() => {
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000); // Reduce the delay to 1 second
+    });
   };
 
   return (
@@ -223,7 +241,7 @@ const Navigation = ({ onLoginClick }) => {
           </div>
         </div>
       </nav>
-      <Login isOpen={isLoginOpen} onClose={closeLogin} />
+      <Login isOpen={isLoginOpen} onClose={closeLogin} onLoginSuccess={handleLoginSuccess} />
     </>
   );
 };

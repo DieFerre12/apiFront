@@ -20,7 +20,7 @@ const Footer = () => {
         <div>
           <h4 className="font-bold">Seguinos</h4>
           <ul className="text-gray-300">
-            <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Twitter</a></li>
+            <li><a href="https://twitter.com/momorelojero" target="_blank" rel="noopener noreferrer" className="hover:underline">Twitter</a></li>
             <li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Instagram</a></li>
           </ul>
         </div>

@@ -114,7 +114,7 @@ const Admin = ({ isOpen, onClose }) => {
         timer: 1500
       });
 
-      // Limpiar los campos del formulario después de una acción exitosa
+      // limpiar los campos del formulario después de una acción 
       setModel("");
       setPrecio("");
       setDescripcion("");
@@ -126,7 +126,7 @@ const Admin = ({ isOpen, onClose }) => {
       setImage(null);
       setSuccessMessage("Producto creado exitosamente");
 
-      onClose(); // Cierra el modal o ventana al terminar el proceso
+      onClose(); //Cierre despyes de crear el producto
     } catch (err) {
       console.error("Error durante la creación del producto:", err);
       setError(err.message);

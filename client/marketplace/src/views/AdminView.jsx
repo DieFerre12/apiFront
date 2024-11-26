@@ -48,7 +48,7 @@ const AdminView = () => {
           Aquí puedes gestionar las funciones administrativas de la aplicación.
         </p>
 
-        {/* Botón para abrir AdminFunction */}
+        {/* AdminFunction */}
         <button
           onClick={() => setIsFuncionesAdminOpen(true)}
           className="w-full mb-4 bg-blue-500 text-white py-3 rounded-lg shadow-md 
@@ -57,7 +57,7 @@ const AdminView = () => {
           Agregar Productos
         </button>
 
-        {/* Botón para abrir Actualizar Stock */}
+        {/*  Actualizar Stock */}
         <button
           onClick={() => setIsActualizarStockOpen(true)}
           className="w-full mb-4 bg-green-500 text-white py-3 rounded-lg shadow-md 
@@ -66,7 +66,7 @@ const AdminView = () => {
           Actualizar Stock de Producto
         </button>
 
-        {/* Botón para abrir Actualizar Precio */}
+        {/* Actualizar Precio */}
         <button
           onClick={() => setIsActualizarPrecioOpen(true)}
           className="w-full mb-4 bg-yellow-500 text-white py-3 rounded-lg shadow-md 
@@ -75,7 +75,7 @@ const AdminView = () => {
           Actualizar Precio de Producto
         </button>
 
-        {/* Botón para abrir Eliminar Producto */}
+        {/*Eliminar Producto */}
         <button
           onClick={() => setIsEliminarProductoOpen(true)}
           className="w-full bg-red-500 text-white py-3 rounded-lg shadow-md 

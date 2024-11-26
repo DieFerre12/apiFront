@@ -6,7 +6,7 @@ import Home from "./views/Home";
 import ProductList from "./components/Product/ProductList";
 import ProductDetail from "./components/Product/ProductDetail";
 import Cart from "./components/Cart/Cart";
-import Register from "./views/Register";
+import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";

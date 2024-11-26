@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { registerUser } from "../components/Redux/slices/registerSlice";
+import { registerUser } from "../Redux/slices/registerSlice";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -19,11 +19,13 @@ const Register = () => {
 
   useEffect(() => {
     if (user) {
-      navigate("/product");
+      navigate("/");
       window.location.reload();
     }
   }, [user, navigate]);
 
+
+  // Función para manejar los cambios en los inputs en el formulario de registro
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });

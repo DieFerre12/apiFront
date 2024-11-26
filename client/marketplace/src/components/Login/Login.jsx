@@ -2,19 +2,18 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useFetchUsers from "../Login/useFetchUsers";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Swal from "sweetalert2";
 
-const Login = ({ isOpen, onClose, onLogin }) => {
+const Login = ({ isOpen, onClose, onLoginSuccess }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
   const { users, error: fetchError } = useFetchUsers();
   const navigate = useNavigate();
-  
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     const API_URL = "http://localhost:4002/api/v1/auth/authenticate";
 
     try {
@@ -33,12 +32,12 @@ const Login = ({ isOpen, onClose, onLogin }) => {
 
       const data = await response.json();
       console.log("Inicio de sesión exitoso:", data);
-      
+
       if (data.access_token) {
         localStorage.setItem("token", data.access_token);
-        
+
         const loggedInUser = users.find(user => user.email === email);
-        
+
         if (loggedInUser) {
           const userData = {
             id: loggedInUser.id,
@@ -46,19 +45,16 @@ const Login = ({ isOpen, onClose, onLogin }) => {
             nombre: loggedInUser.firstName,
             apellido: loggedInUser.apellido
           };
-          
+
           localStorage.setItem("user", JSON.stringify(userData));
           onClose();
-          onLogin(userData);
+          onLoginSuccess(userData);
 
-          
           if (email === "admin@example.com") {
-            
             navigate("/");
           } else {
             navigate("/");
           }
-          window.location.reload();
         } else {
           throw new Error("Usuario no encontrado.");
         }
@@ -66,8 +62,15 @@ const Login = ({ isOpen, onClose, onLogin }) => {
         throw new Error("Datos de autenticación incompletos");
       }
     } catch (err) {
-      console.error("Error durante el inicio de sesión:", err);
-      setError(err.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error en el inicio de sesión, email o contraseña incorrectos',
+        confirmButtonText: 'Entendido',
+        customClass: {
+          popup: 'swal2-sm',
+        },
+      });
     }
   };
 
@@ -82,7 +85,6 @@ const Login = ({ isOpen, onClose, onLogin }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
         <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Iniciar Sesión</h2>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
         {fetchError && <p className="text-red-500 text-sm">{fetchError}</p>}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
